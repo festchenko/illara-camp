@@ -32,6 +32,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
     mainButton.hide();
 
     // Mount the game
+    console.log('Container before mount:', container.clientWidth, 'x', container.clientHeight);
     game.mount(container, (score: number) => {
       // Game ended, handle result
       console.log(`Game ended with score: ${score}`);
@@ -92,7 +93,8 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
         style={{ 
           minHeight: '400px',
           height: 'calc(100vh - 120px)', // Full viewport height minus header
-          width: '100%'
+          width: '100vw',
+          maxWidth: '100%'
         }}
       />
     </div>

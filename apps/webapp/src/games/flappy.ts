@@ -129,7 +129,7 @@ class FlappyScene extends Phaser.Scene {
     this.time.addEvent({
       delay: 16,
       callback: () => {
-        if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored) {
+        if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored && !this.gameOver) {
           this.score++;
           this.scoreText.setText(`Score: ${this.score}`);
           // Update max score
@@ -302,8 +302,10 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: containerWidth,
+        height: containerHeight
       }
     };
 
