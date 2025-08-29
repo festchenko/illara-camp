@@ -45,7 +45,7 @@ class FlappyScene extends Phaser.Scene {
     });
 
     // ILL formula text
-    this.add.text(20, 40, 'ILL: 1 per 100 points', {
+    this.add.text(20, 40, 'ILL: 1 per 10 points', {
       fontSize: '16px',
       color: '#8b5cf6',
       stroke: '#000',
