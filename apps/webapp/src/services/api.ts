@@ -50,15 +50,22 @@ class ApiService {
   }
 
   async getWallet(): Promise<Wallet> {
+    console.log('Getting wallet with headers:', this.getHeaders());
     const response = await fetch(`${API_BASE}/wallet`, {
       headers: this.getHeaders(),
     });
     
+    console.log('Wallet response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error('Failed to fetch wallet');
+      const errorText = await response.text();
+      console.error('Wallet error response:', errorText);
+      throw new Error(`Failed to fetch wallet: ${response.status} ${errorText}`);
     }
     
-    return response.json();
+    const result = await response.json();
+    console.log('Wallet response:', result);
+    return result;
   }
 
   async earnWallet(amount: number, reason: string) {

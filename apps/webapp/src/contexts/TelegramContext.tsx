@@ -186,12 +186,27 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
         return;
       }
       
-      setUser({
-        id: 123456789,
-        first_name: 'Test',
-        last_name: 'User',
-        username: 'testuser'
-      });
+      // Check if we're testing with URL parameters
+      const testUrlParams = new URLSearchParams(window.location.search);
+      const testUser = testUrlParams.get('test_user');
+      
+      if (testUser === 'true') {
+        console.log('Using test user for development');
+        setUser({
+          id: 123456789,
+          first_name: 'Test',
+          last_name: 'User',
+          username: 'testuser'
+        });
+      } else {
+        console.log('No Telegram WebApp and no test mode, using fallback user');
+        setUser({
+          id: 999999999,
+          first_name: 'Telegram',
+          last_name: 'User',
+          username: 'telegram_user'
+        });
+      }
     }
   }, []);
 
