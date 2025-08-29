@@ -40,11 +40,11 @@ class FlappyScene extends Phaser.Scene {
     this.pipes = this.add.group();
 
     // Score text
-    this.scoreText = this.add.text(20, 20, 'Score: 0', {
-      fontSize: '32px',
+    this.scoreText = this.add.text(20, 10, 'Score: 0', {
+      fontSize: '24px',
       color: '#fff',
       stroke: '#000',
-      strokeThickness: 4
+      strokeThickness: 2
     });
 
     // Input handling
@@ -138,6 +138,7 @@ class FlappyScene extends Phaser.Scene {
           }
           // Save max score to container for GameHost to access
           (this.game.config.parent as any).currentScore = this.maxScore;
+          console.log('Score updated:', this.score, 'Max score:', this.maxScore);
           scored = true;
         }
       },
@@ -180,27 +181,27 @@ class FlappyScene extends Phaser.Scene {
     this.physics.pause();
     
     // Show game over text
-    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.4, 'Game Over!', {
-      fontSize: '48px',
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.3, 'Game Over!', {
+      fontSize: '36px',
       color: '#fff',
       stroke: '#000',
-      strokeThickness: 4
+      strokeThickness: 3
     }).setOrigin(0.5);
 
     // Show final score
-    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.5, `Final Score: ${this.score}`, {
-      fontSize: '32px',
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.4, `Final Score: ${this.maxScore}`, {
+      fontSize: '24px',
       color: '#fff',
       stroke: '#000',
-      strokeThickness: 4
+      strokeThickness: 2
     }).setOrigin(0.5);
 
     // Add restart button
-    const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.6, 'Play Again', {
-      fontSize: '24px',
+    const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.5, 'Play Again', {
+      fontSize: '20px',
       color: '#fff',
       backgroundColor: '#8b5cf6',
-      padding: { x: 20, y: 10 }
+      padding: { x: 16, y: 8 }
     }).setOrigin(0.5).setInteractive();
 
     restartButton.on('pointerdown', () => {
