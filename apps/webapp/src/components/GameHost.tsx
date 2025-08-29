@@ -17,7 +17,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
 
     // Set up Telegram buttons
     backButton.show(() => {
-      game.unmount();
+      game.unmount(container);
       onExit();
     });
 
@@ -33,7 +33,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
 
     // Cleanup on unmount
     return () => {
-      game.unmount();
+      game.unmount(container);
       backButton.hide();
       mainButton.hide();
     };
@@ -46,7 +46,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
           <button
             onClick={() => {
               console.log('Exit button clicked');
-              game.unmount();
+              game.unmount(containerRef.current!);
               onExit();
             }}
             className="btn-secondary text-sm px-3 py-1 hover:bg-secondary-600 active:bg-secondary-700"
