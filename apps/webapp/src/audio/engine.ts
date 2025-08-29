@@ -1,6 +1,7 @@
 import { getAudioContext, getMasterGain, isMuted, resumeAudio } from './context';
 import { osc, noise, lpf, delay, reverbMock, applyADSR, frequencySweep } from './synth';
 import { ENV_CLICK, ENV_SHORT, ENV_LONG, ENV_SNAPPY, NOTES } from './presets';
+import { notifyDuck } from '../music/engine';
 
 export type SfxName = 'tap' | 'point' | 'fail' | 'win' | 'unlock' | 'hit' | 'jump' | 'stack' | 'flip' | 'match';
 
@@ -222,6 +223,11 @@ export function playSfx(name: SfxName, opts: { volume?: number } = {}): void {
     
     if (finalVolume > 0) {
       sfxFunction(ctx, master, { ...opts, volume: finalVolume });
+      
+      // Trigger ducking for certain sounds
+      if (name === 'win' || name === 'fail' || name === 'unlock') {
+        notifyDuck();
+      }
     }
     
     // Trigger haptic feedback for certain sounds

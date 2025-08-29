@@ -84,6 +84,9 @@ VITE_API_URL="http://localhost:3001"
 
 ### Audio System
 - **WebAudio SFX Engine**: 10 sound effects with no external files
+- **Background Music**: 3 procedural music loops (happy, cosmic, chill)
+- **Tempo-synced Transport**: BPM control with quantized start/stop
+- **Ducking System**: Music lowers -6dB when SFX play
 - **Mobile Support**: Resume on first user interaction
 - **Haptic Integration**: Syncs with Telegram haptic feedback
 - **Sound Effects**: tap, point, fail, win, unlock, hit, jump, stack, flip, match
