@@ -18,6 +18,11 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
 
     // Set up Telegram buttons
     backButton.show(() => {
+      if (onResult) {
+        // Get current score from the game if possible
+        const currentScore = (container as any).currentScore || 0;
+        onResult(currentScore);
+      }
       game.unmount(container);
       onExit();
     });
@@ -48,6 +53,11 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
           <button
             onClick={() => {
               console.log('Exit button clicked');
+              if (onResult) {
+                // Get current score from the game if possible
+                const currentScore = (containerRef.current as any)?.currentScore || 0;
+                onResult(currentScore);
+              }
               game.unmount(containerRef.current!);
               onExit();
             }}

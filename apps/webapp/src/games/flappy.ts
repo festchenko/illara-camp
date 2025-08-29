@@ -131,6 +131,8 @@ class FlappyScene extends Phaser.Scene {
         if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored) {
           this.score++;
           this.scoreText.setText(`Score: ${this.score}`);
+          // Save current score to container for GameHost to access
+          (this.game.config.parent as any).currentScore = this.score;
           scored = true;
         }
       },
@@ -200,8 +202,8 @@ class FlappyScene extends Phaser.Scene {
       this.restartGame();
     });
 
-    // Call onResult immediately
-    this.onResult(this.score);
+    // Don't call onResult here - let the player decide when to finish
+    // onResult will be called when they exit the game
   }
 
   private restartGame() {
@@ -271,8 +273,10 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.EXPAND,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: container.clientWidth || 800,
+        height: container.clientHeight || 600
       }
     };
 
