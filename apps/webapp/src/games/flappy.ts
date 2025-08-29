@@ -3,7 +3,7 @@ import { Game } from '@illara-camp/shared';
 
 class FlappyScene extends Phaser.Scene {
   private bird!: Phaser.GameObjects.Graphics;
-  private pipes!: Phaser.Physics.Arcade.Group;
+  private pipes!: Phaser.GameObjects.Group;
   private scoreText!: Phaser.GameObjects.Text;
   private score: number = 0;
   private gameOver: boolean = false;
@@ -34,7 +34,7 @@ class FlappyScene extends Phaser.Scene {
     birdBody.setBounce(0.1);
 
     // Create pipes group
-    this.pipes = this.physics.add.group();
+    this.pipes = this.add.group();
 
     // Score text
     this.scoreText = this.add.text(16, 16, 'Score: 0', {
