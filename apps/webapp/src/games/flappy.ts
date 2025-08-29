@@ -200,10 +200,8 @@ class FlappyScene extends Phaser.Scene {
       this.restartGame();
     });
 
-    // Call onResult after a delay
-    this.time.delayedCall(2000, () => {
-      this.onResult(this.score);
-    });
+    // Call onResult immediately
+    this.onResult(this.score);
   }
 
   private restartGame() {
@@ -214,12 +212,12 @@ class FlappyScene extends Phaser.Scene {
     // Clear all pipes
     this.pipes.clear(true, true);
     
-    // Clear only game over UI elements
+    // Clear all game over UI elements by type
     this.children.each((child: any) => {
-      if (child !== this.bird && child !== this.scoreText && 
-          child.text !== 'Game Over!' && 
-          child.text !== `Final Score: ${this.score}` &&
-          child.text !== 'Play Again') {
+      if (child.type === 'Text' && 
+          (child.text === 'Game Over!' || 
+           child.text.includes('Final Score:') || 
+           child.text === 'Play Again')) {
         child.destroy();
       }
     });
@@ -273,7 +271,7 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.EXPAND,
         autoCenter: Phaser.Scale.CENTER_BOTH
       }
     };
