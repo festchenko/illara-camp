@@ -1,6 +1,12 @@
 import Phaser from 'phaser';
 import { Game } from '@illara-camp/shared';
 import { playSfx } from '../audio/engine';
+import { Rocket } from './flappy/assets/Rocket';
+import { PipeBody, PipeCap } from './flappy/assets/Pipe';
+import { SkyGradient } from './flappy/assets/Background';
+import { GroundTile } from './flappy/assets/Ground';
+import ReactDOMServer from 'react-dom/server';
+import React from 'react';
 
 class FlappyScene extends Phaser.Scene {
   private bird!: Phaser.GameObjects.Image;
@@ -28,6 +34,11 @@ class FlappyScene extends Phaser.Scene {
     };
     
     img.src = 'data:image/svg+xml;base64,' + btoa(svgString);
+  }
+
+  // Helper function to convert React component to SVG string
+  private componentToSVGString(component: React.ReactElement): string {
+    return ReactDOMServer.renderToString(component);
   }
 
   constructor() {
@@ -64,32 +75,19 @@ class FlappyScene extends Phaser.Scene {
       );
     }
 
-    // Create rocket SVG texture
-    const rocketSVG = `
-      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
-          </linearGradient>
-          <linearGradient id="flameGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#FFD166;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#FF6B6B;stop-opacity:1" />
-          </linearGradient>
-        </defs>
-        <!-- Rocket body -->
-        <ellipse cx="24" cy="24" rx="12" ry="16" fill="url(#rocketGrad)" stroke="#C0392B" stroke-width="2"/>
-        <!-- Rocket window -->
-        <circle cx="24" cy="20" r="4" fill="#87CEEB" stroke="#5DADE2" stroke-width="1"/>
-        <!-- Rocket fins -->
-        <polygon points="12,32 8,40 16,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
-        <polygon points="36,32 40,40 32,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
-        <!-- Flame -->
-        <polygon points="24,40 20,48 24,44 28,48" fill="url(#flameGrad)"/>
-      </svg>
-    `;
-    
+    // Create beautiful rocket texture from our asset
+    const rocketComponent = React.createElement(Rocket, { size: 48 });
+    const rocketSVG = this.componentToSVGString(rocketComponent);
     this.createTextureFromSVG('rocket', rocketSVG);
+
+    // Create pipe textures from our assets
+    const pipeBodyComponent = React.createElement(PipeBody, { width: 72, height: 300 });
+    const pipeBodySVG = this.componentToSVGString(pipeBodyComponent);
+    this.createTextureFromSVG('pipeBody', pipeBodySVG);
+
+    const pipeCapComponent = React.createElement(PipeCap, { width: 88, height: 28 });
+    const pipeCapSVG = this.componentToSVGString(pipeCapComponent);
+    this.createTextureFromSVG('pipeCap', pipeCapSVG);
 
     // Create bird using rocket texture
     this.bird = this.add.image(
@@ -189,25 +187,46 @@ class FlappyScene extends Phaser.Scene {
     const gap = 150;
     const gapY = Phaser.Math.Between(100, this.cameras.main.height - 200);
     
-    // Top pipe - create with better colors
-    const topPipe = this.add.rectangle(this.cameras.main.width + 50, gapY / 2, 60, gapY, 0x2EC4B6);
-    topPipe.setStrokeStyle(3, 0x1B4965);
-    this.pipes.add(topPipe);
+    // Create beautiful pipes using our assets
+    const pipeWidth = 72;
+    const pipeX = this.cameras.main.width + 50;
+    
+    // Top pipe body
+    const topPipeBody = this.add.image(pipeX, gapY / 2, 'pipeBody');
+    topPipeBody.setDisplaySize(pipeWidth, gapY);
+    topPipeBody.setOrigin(0.5, 0.5);
+    this.pipes.add(topPipeBody);
+    
+    // Top pipe cap
+    const topPipeCap = this.add.image(pipeX, gapY, 'pipeCap');
+    topPipeCap.setDisplaySize(88, 28);
+    topPipeCap.setOrigin(0.5, 0);
+    this.pipes.add(topPipeCap);
 
-    // Bottom pipe - create with better colors
-    const bottomPipe = this.add.rectangle(this.cameras.main.width + 50, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, 60, this.cameras.main.height - gapY - gap, 0x2EC4B6);
-    bottomPipe.setStrokeStyle(3, 0x1B4965);
-    this.pipes.add(bottomPipe);
+    // Bottom pipe body
+    const bottomPipeBody = this.add.image(pipeX, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, 'pipeBody');
+    bottomPipeBody.setDisplaySize(pipeWidth, this.cameras.main.height - gapY - gap);
+    bottomPipeBody.setOrigin(0.5, 0.5);
+    this.pipes.add(bottomPipeBody);
+    
+    // Bottom pipe cap
+    const bottomPipeCap = this.add.image(pipeX, gapY + gap, 'pipeCap');
+    bottomPipeCap.setDisplaySize(88, 28);
+    bottomPipeCap.setOrigin(0.5, 1);
+    bottomPipeCap.setFlipY(true);
+    this.pipes.add(bottomPipeCap);
 
     // Move pipes with tween
     this.tweens.add({
-      targets: [topPipe, bottomPipe],
+      targets: [topPipeBody, topPipeCap, bottomPipeBody, bottomPipeCap],
       x: -100,
       duration: 4000,
       ease: 'Linear',
       onComplete: () => {
-        topPipe.destroy();
-        bottomPipe.destroy();
+        topPipeBody.destroy();
+        topPipeCap.destroy();
+        bottomPipeBody.destroy();
+        bottomPipeCap.destroy();
       }
     });
 
@@ -262,14 +281,14 @@ class FlappyScene extends Phaser.Scene {
 
     const birdX = this.bird.x;
     const birdY = this.bird.y;
-    const birdRadius = 20; // Обновили радиус под новый размер
+    const birdRadius = 20; // Updated radius for new size
     
     this.pipes.getChildren().forEach((pipe: any) => {
-      if (pipe.active) {
+      if (pipe.active && pipe.texture && pipe.texture.key === 'pipeBody') {
         const pipeX = pipe.x;
         const pipeY = pipe.y;
-        const pipeWidth = pipe.width || 50;
-        const pipeHeight = pipe.height || 50;
+        const pipeWidth = pipe.displayWidth || 72;
+        const pipeHeight = pipe.displayHeight || 300;
         
         // Check collision between bird circle and pipe rectangle
         const closestX = Math.max(pipeX - pipeWidth/2, Math.min(birdX, pipeX + pipeWidth/2));
