@@ -18,6 +18,7 @@ const AppContent: React.FC = () => {
   console.log('App version: 1.0.1 - Database fixed!');
       
       // Authenticate with backend
+      console.log('Sending auth with photo_url:', user.photo_url);
       api.authTelegram(
         user.id.toString(),
         `${user.first_name} ${user.last_name || ''}`.trim(),

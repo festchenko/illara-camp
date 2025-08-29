@@ -72,9 +72,18 @@ export const ProfileScreen: React.FC = () => {
                 src={user.photo_url} 
                 alt="Avatar" 
                 className="w-full h-full rounded-full object-cover"
+                onError={(e) => {
+                  console.error('Failed to load avatar:', user.photo_url);
+                  e.currentTarget.style.display = 'none';
+                }}
+                onLoad={() => {
+                  console.log('Avatar loaded successfully:', user.photo_url);
+                }}
               />
             ) : (
-              '👤'
+              <div onClick={() => console.log('No photo_url available for user:', user)}>
+                👤
+              </div>
             )}
           </div>
           <h2 className="text-xl font-bold text-white mb-1">
