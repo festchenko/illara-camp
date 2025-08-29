@@ -29,23 +29,30 @@ app.post('/auth/telegram', async (req, res) => {
   try {
     const { tg_id, name, avatar } = req.body;
     
+    console.log('Auth request:', { tg_id, name, avatar });
+    
     if (!tg_id) {
       return res.status(400).json({ error: 'tg_id is required' });
     }
 
+    console.log('Creating/updating user with tg_id:', tg_id);
     const user = await prisma.user.upsert({
       where: { tg_id },
       update: { name, avatar },
       create: { tg_id, name, avatar }
     });
 
+    console.log('User created/updated:', user);
+
     // Ensure wallet exists
+    console.log('Creating/updating wallet for user:', user.id);
     await prisma.wallet.upsert({
       where: { user_id: user.id },
       update: {},
       create: { user_id: user.id, balance: 0 }
     });
 
+    console.log('Auth successful for user:', user.id);
     res.json({ user });
   } catch (error) {
     console.error('Auth error:', error);
@@ -57,10 +64,13 @@ app.post('/auth/telegram', async (req, res) => {
 app.get('/wallet', async (req, res) => {
   try {
     const tg_id = req.headers['x-tg-id'] as string;
+    console.log('Wallet request for tg_id:', tg_id);
+    
     if (!tg_id) {
       return res.status(400).json({ error: 'x-tg-id header required' });
     }
 
+    console.log('Looking for user with tg_id:', tg_id);
     const user = await prisma.user.findUnique({
       where: { tg_id },
       include: {
@@ -72,14 +82,19 @@ app.get('/wallet', async (req, res) => {
       }
     });
 
+    console.log('User found:', user ? 'yes' : 'no', user);
+
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({
+    const response = {
       balance: user.wallet?.balance || 0,
       lastTx: user.transactions
-    });
+    };
+    
+    console.log('Wallet response:', response);
+    res.json(response);
   } catch (error) {
     console.error('Wallet error:', error);
     res.status(500).json({ error: 'Internal server error' });
