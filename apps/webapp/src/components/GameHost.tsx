@@ -42,7 +42,19 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex-shrink-0 p-4 bg-black/20">
-        <h1 className="text-xl font-bold text-center">{game.title}</h1>
+        <div className="flex items-center justify-between mb-2">
+          <button
+            onClick={() => {
+              game.unmount();
+              onExit();
+            }}
+            className="btn-secondary text-sm px-3 py-1"
+          >
+            ← Exit
+          </button>
+          <h1 className="text-xl font-bold">{game.title}</h1>
+          <div className="w-16"></div> {/* Spacer */}
+        </div>
         <p className="text-sm text-center text-gray-300">
           Recommended session: {game.recommendedSessionSec}s | Difficulty: {game.difficulty}/3
         </p>

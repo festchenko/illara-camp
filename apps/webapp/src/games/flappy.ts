@@ -23,7 +23,7 @@ class FlappyScene extends Phaser.Scene {
 
     // Create bird (simple circle)
     this.bird = this.add.graphics();
-    this.bird.fillStyle(0x00ff00, 1);
+    this.bird.fillStyle(0xff6b6b, 1);
     this.bird.fillCircle(0, 0, 15);
     this.bird.x = 100;
     this.bird.y = 300;
@@ -75,7 +75,7 @@ class FlappyScene extends Phaser.Scene {
     
     // Top pipe
     const topPipe = this.add.graphics();
-    topPipe.fillStyle(0x00ff00, 1);
+    topPipe.fillStyle(0x4ecdc4, 1);
     topPipe.fillRect(0, 0, 50, gapY);
     topPipe.x = 800;
     topPipe.y = 0;
@@ -85,7 +85,7 @@ class FlappyScene extends Phaser.Scene {
 
     // Bottom pipe
     const bottomPipe = this.add.graphics();
-    bottomPipe.fillStyle(0x00ff00, 1);
+    bottomPipe.fillStyle(0x4ecdc4, 1);
     bottomPipe.fillRect(0, 0, 50, 600 - gapY - gap);
     bottomPipe.x = 800;
     bottomPipe.y = gapY + gap;
@@ -102,10 +102,35 @@ class FlappyScene extends Phaser.Scene {
       onComplete: () => {
         topPipe.destroy();
         bottomPipe.destroy();
-        this.score++;
-        this.scoreText.setText(`Score: ${this.score}`);
       }
     });
+
+    // Add score trigger
+    const scoreTrigger = this.add.graphics();
+    scoreTrigger.fillStyle(0xffffff, 0);
+    scoreTrigger.fillRect(0, 0, 1, gap);
+    scoreTrigger.x = 800;
+    scoreTrigger.y = gapY;
+    this.physics.add.existing(scoreTrigger);
+    (scoreTrigger.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+    
+    // Move score trigger with pipes
+    this.tweens.add({
+      targets: scoreTrigger,
+      x: -100,
+      duration: 3000,
+      ease: 'Linear',
+      onComplete: () => {
+        scoreTrigger.destroy();
+      }
+    });
+
+    // Check if bird passes the trigger
+    this.physics.add.overlap(this.bird, scoreTrigger, () => {
+      this.score++;
+      this.scoreText.setText(`Score: ${this.score}`);
+      scoreTrigger.destroy();
+    }, undefined, this);
   }
 
   private gameOverHandler() {
