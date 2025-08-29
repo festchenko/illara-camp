@@ -244,6 +244,11 @@ app.post('/scores', async (req, res) => {
   }
 });
 
+// health & root
+app.get('/health', (_, res) => res.json({ ok: true, time: Date.now() }));
+app.get('/',       (_, res) => res.json({ ok: true, service: 'illara-api' }));
+
+
 app.listen(PORT, () => {
   console.log(`🚀 API server running on port ${PORT}`);
 });
