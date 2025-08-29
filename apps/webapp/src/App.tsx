@@ -13,8 +13,9 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      console.log('API URL:', import.meta.env.VITE_API_URL);
-      console.log('User:', user);
+        console.log('API URL:', import.meta.env.VITE_API_URL);
+  console.log('User:', user);
+  console.log('App version: 1.0.1 - Database fixed!');
       
       // Authenticate with backend
       api.authTelegram(
