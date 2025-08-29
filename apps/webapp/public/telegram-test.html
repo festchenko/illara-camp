@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram WebApp Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Telegram WebApp Test</h1>
+    <div id="status">Checking...</div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const status = document.getElementById('status');
+            
+            console.log('=== Telegram WebApp Test ===');
+            console.log('window.Telegram:', window.Telegram);
+            console.log('window.Telegram?.WebApp:', window.Telegram?.WebApp);
+            console.log('window.location.href:', window.location.href);
+            console.log('User Agent:', navigator.userAgent);
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                status.innerHTML = '✅ Telegram WebApp SDK доступен!';
+                status.style.color = 'green';
+                
+                // Initialize WebApp
+                window.Telegram.WebApp.ready();
+                
+                console.log('WebApp initialized');
+                console.log('User:', window.Telegram.WebApp.initDataUnsafe?.user);
+                console.log('Theme:', window.Telegram.WebApp.colorScheme);
+            } else {
+                status.innerHTML = '❌ Telegram WebApp SDK недоступен';
+                status.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -39,6 +39,10 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
     console.log('=== Telegram WebApp Initialization ===');
     console.log('window.Telegram:', window.Telegram);
     console.log('window.Telegram?.WebApp:', window.Telegram?.WebApp);
+    console.log('window.location.href:', window.location.href);
+    console.log('window.location.origin:', window.location.origin);
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Referrer:', document.referrer);
     
     // Initialize Telegram WebApp
     if (window.Telegram?.WebApp) {
