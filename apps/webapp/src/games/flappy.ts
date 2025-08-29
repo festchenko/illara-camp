@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { Game } from '@illara-camp/shared';
+import { playSfx } from '../audio/engine';
 
 class FlappyScene extends Phaser.Scene {
   private bird!: Phaser.GameObjects.Graphics;
@@ -45,6 +46,7 @@ class FlappyScene extends Phaser.Scene {
     });
 
     // ILL formula text
+    // Add ILL info text
     this.add.text(20, 40, 'ILL: 1 per 10 points', {
       fontSize: '16px',
       color: '#8b5cf6',
@@ -79,6 +81,7 @@ class FlappyScene extends Phaser.Scene {
   private flap() {
     if (this.bird.body) {
       (this.bird.body as Phaser.Physics.Arcade.Body).setVelocityY(-400);
+      playSfx('jump'); // Play jump sound
     }
   }
 
@@ -157,6 +160,7 @@ class FlappyScene extends Phaser.Scene {
         if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored && !this.gameOver) {
           this.score++;
           this.scoreText.setText(`Score: ${this.score}`);
+          playSfx('point'); // Play point sound
           // Update max score
           if (this.score > this.maxScore) {
             this.maxScore = this.score;
@@ -206,6 +210,7 @@ class FlappyScene extends Phaser.Scene {
     
     this.gameOver = true;
     this.physics.pause();
+    playSfx('fail'); // Play fail sound
     
     // Show game over text
     this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.3, 'Game Over!', {

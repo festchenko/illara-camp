@@ -10,6 +10,8 @@ import { ProfileScreen } from './screens/ProfileScreen';
 import { GameScreen } from './screens/GameScreen';
 import { Styleguide } from './pages/Styleguide';
 import { AssetsPreview } from './pages/AssetsPreview';
+import { AudioPreview } from './pages/AudioPreview';
+import { AudioEnableBanner } from './audio/useSFX';
 
 const AppContent: React.FC = () => {
   const { user } = useTelegram();
@@ -62,6 +64,7 @@ const AppContent: React.FC = () => {
         <Route path="/play/:gameId" element={<GameScreen />} />
         <Route path="/styleguide" element={<Styleguide />} />
         <Route path="/assets" element={<AssetsPreview />} />
+        <Route path="/audio" element={<AudioPreview />} />
         <Route path="/" element={<Navigate to="/universe" replace />} />
         <Route path="*" element={<Navigate to="/universe" replace />} />
       </Routes>
@@ -74,6 +77,7 @@ function App() {
     <Router>
       <TelegramProvider>
         <AppContent />
+        <AudioEnableBanner />
       </TelegramProvider>
     </Router>
   );

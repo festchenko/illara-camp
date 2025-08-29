@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTelegram } from '../contexts/TelegramContext';
 import { GameHost } from '../components/GameHost';
 import { api } from '../services/api';
+import { playSfx } from '../audio/engine';
 import { flappyGame } from '../games/flappy';
 import { stackGame } from '../games/stack';
 import { memoryGame } from '../games/memory';
@@ -49,6 +50,7 @@ export const GameScreen: React.FC = () => {
       
       // Show result
       setShowResult(true);
+      playSfx('win'); // Play win sound for earning ILL
       
       // Auto-navigate back after delay
       setTimeout(() => {
@@ -58,6 +60,7 @@ export const GameScreen: React.FC = () => {
       
     } catch (error) {
       console.error('Failed to save result:', error);
+      playSfx('fail'); // Play fail sound for error
       // Still navigate back even if save fails
       setTimeout(() => {
         setShowResult(false);

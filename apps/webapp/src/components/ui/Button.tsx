@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Icon, IconName } from './Icon';
+import { playSfx } from '../../audio/engine';
 
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost';
@@ -41,6 +42,9 @@ export function Button({
 }: ButtonProps) {
   const handleClick = () => {
     if (disabled || loading) return;
+    
+    // Play tap sound
+    playSfx('tap');
     
     // Trigger haptic feedback if available
     if (typeof window !== 'undefined' && window.Telegram?.WebApp?.HapticFeedback) {

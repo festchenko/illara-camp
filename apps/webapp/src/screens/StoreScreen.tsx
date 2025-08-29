@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTelegram } from '../contexts/TelegramContext';
 import { api } from '../services/api';
+import { playSfx } from '../audio/engine';
 import { Wallet, StoreItem } from '@illara-camp/shared';
 
 const storeItems: StoreItem[] = [
@@ -58,6 +59,7 @@ export const StoreScreen: React.FC = () => {
     haptics.impactOccurred('medium');
     
     if (!wallet || wallet.balance < item.price) {
+      playSfx('fail'); // Play fail sound for insufficient funds
       alert('Insufficient ILL balance!');
       return;
     }
@@ -76,9 +78,11 @@ export const StoreScreen: React.FC = () => {
       
       // Show coupon code
       setShowCoupon({ code: reward.code, type: item.type });
+      playSfx('unlock'); // Play unlock sound for successful purchase
       
     } catch (error) {
       console.error('Purchase failed:', error);
+      playSfx('fail'); // Play fail sound for purchase error
       alert('Purchase failed. Please try again.');
     } finally {
       setPurchasing(null);

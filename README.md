@@ -78,9 +78,15 @@ VITE_API_URL="http://localhost:3001"
 ## 🎯 Features
 
 ### Economy System
-- **ILL Tokens**: Earned by playing games (5-50 ILL per game)
+- **ILL Tokens**: Earned by playing games (1 ILL per 10 points)
 - **Store**: Purchase items and coupons with ILL
 - **Wallet**: Track balance and transaction history
+
+### Audio System
+- **WebAudio SFX Engine**: 10 sound effects with no external files
+- **Mobile Support**: Resume on first user interaction
+- **Haptic Integration**: Syncs with Telegram haptic feedback
+- **Sound Effects**: tap, point, fail, win, unlock, hit, jump, stack, flip, match
 
 ### Game Mechanics
 - **Flappy Rocket**: Score = pipes passed
