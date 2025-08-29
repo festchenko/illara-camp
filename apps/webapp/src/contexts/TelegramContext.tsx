@@ -139,6 +139,22 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
       // Check if we're in Telegram by looking at the URL
       const urlParams = new URLSearchParams(window.location.search);
       const startParam = urlParams.get('start');
+      const userParam = urlParams.get('user');
+      const tgIdParam = urlParams.get('tg_id');
+      
+      if (userParam) {
+        console.log('Found user parameter:', userParam);
+        try {
+          const userData = JSON.parse(decodeURIComponent(userParam));
+          if (userData.id && userData.first_name) {
+            console.log('Using user from user parameter:', userData);
+            setUser(userData);
+            return;
+          }
+        } catch (error) {
+          console.log('Error parsing user parameter:', error);
+        }
+      }
       
       if (startParam) {
         console.log('Found start parameter:', startParam);
@@ -152,6 +168,18 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
         } catch (error) {
           console.log('Error parsing start parameter:', error);
         }
+      }
+      
+      if (tgIdParam) {
+        console.log('Found tg_id parameter:', tgIdParam);
+        // Create a basic user object from tg_id
+        setUser({
+          id: parseInt(tgIdParam),
+          first_name: 'Telegram',
+          last_name: 'User',
+          username: `user_${tgIdParam}`
+        });
+        return;
       }
       
       setUser({
