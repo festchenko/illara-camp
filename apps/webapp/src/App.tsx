@@ -2,14 +2,22 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { TelegramProvider, useTelegram } from './contexts/TelegramContext';
 import { api } from './services/api';
+import { applyThemeVars, getThemeVars } from './design/theme';
 import { UniverseScreen } from './screens/UniverseScreen';
 import { StoreScreen } from './screens/StoreScreen';
 import { WalletScreen } from './screens/WalletScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { GameScreen } from './screens/GameScreen';
+import { Styleguide } from './pages/Styleguide';
 
 const AppContent: React.FC = () => {
   const { user } = useTelegram();
+
+  useEffect(() => {
+    // Apply theme on mount
+    const themeVars = getThemeVars();
+    applyThemeVars(themeVars);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -51,6 +59,7 @@ const AppContent: React.FC = () => {
         <Route path="/wallet" element={<WalletScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/play/:gameId" element={<GameScreen />} />
+        <Route path="/styleguide" element={<Styleguide />} />
         <Route path="/" element={<Navigate to="/universe" replace />} />
         <Route path="*" element={<Navigate to="/universe" replace />} />
       </Routes>

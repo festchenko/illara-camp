@@ -7,30 +7,42 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-        },
-        secondary: {
-          50: '#fdf4ff',
-          100: '#fae8ff',
-          200: '#f5d0fe',
-          300: '#f0abfc',
-          400: '#e879f9',
-          500: '#d946ef',
-          600: '#c026d3',
-          700: '#a21caf',
-          800: '#86198f',
-          900: '#701a75',
-        }
+        // Design system colors using CSS variables
+        bg: 'var(--color-bg)',
+        text: 'var(--color-text)',
+        hint: 'var(--color-hint)',
+        link: 'var(--color-link)',
+        button: 'var(--color-button)',
+        'button-text': 'var(--color-button-text)',
+        card: 'var(--color-card)',
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
+        danger: 'var(--color-danger)',
+        
+        // Legacy color support
+        ink900: '#0B1020',
+        ink700: '#1B2238',
+        ink500: '#2A3352',
+        cloud100: '#F7FAFC',
+        cloud50: '#FFFFFF',
+        space1: '#0D1B2A',
+        space2: '#1B4965',
+        space3: '#5FA8D3',
+        galaxy: '#6C5CE7',
+      },
+      borderRadius: {
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+      },
+      boxShadow: {
+        soft: 'var(--shadow-soft)',
+        card: 'var(--shadow-card)',
+        pop: 'var(--shadow-pop)',
       }
     },
   },
