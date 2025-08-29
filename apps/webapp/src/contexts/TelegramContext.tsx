@@ -135,6 +135,25 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
     } else {
       // Fallback for testing outside Telegram
       console.log('Telegram WebApp not available, using test user');
+      
+      // Check if we're in Telegram by looking at the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const startParam = urlParams.get('start');
+      
+      if (startParam) {
+        console.log('Found start parameter:', startParam);
+        try {
+          const userData = JSON.parse(decodeURIComponent(startParam));
+          if (userData.id && userData.first_name) {
+            console.log('Using user from start parameter:', userData);
+            setUser(userData);
+            return;
+          }
+        } catch (error) {
+          console.log('Error parsing start parameter:', error);
+        }
+      }
+      
       setUser({
         id: 123456789,
         first_name: 'Test',
