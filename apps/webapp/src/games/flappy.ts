@@ -259,10 +259,14 @@ export const flappyGame: Game = {
   difficulty: 1,
   
   mount(container: HTMLElement, onResult: (score: number) => void) {
+    // Get the actual container dimensions
+    const containerWidth = container.clientWidth || window.innerWidth;
+    const containerHeight = container.clientHeight || window.innerHeight;
+    
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: container.clientWidth || 800,
-      height: container.clientHeight || 600,
+      width: containerWidth,
+      height: containerHeight,
       parent: container,
       physics: {
         default: 'arcade',
@@ -273,10 +277,8 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: container.clientWidth || 800,
-        height: container.clientHeight || 600
+        mode: Phaser.Scale.NONE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
       }
     };
 

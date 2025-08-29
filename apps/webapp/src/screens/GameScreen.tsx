@@ -31,7 +31,7 @@ export const GameScreen: React.FC = () => {
   }, [gameId, navigate]);
 
   const handleGameResult = async (score: number) => {
-    if (!user || !gameId) return;
+    if (!user || !gameId || score === 0) return;
 
     haptics.impactOccurred('heavy');
 
@@ -51,6 +51,7 @@ export const GameScreen: React.FC = () => {
       
       // Auto-navigate back after delay
       setTimeout(() => {
+        setShowResult(false);
         navigate('/universe');
       }, 3000);
       
@@ -58,6 +59,7 @@ export const GameScreen: React.FC = () => {
       console.error('Failed to save result:', error);
       // Still navigate back even if save fails
       setTimeout(() => {
+        setShowResult(false);
         navigate('/universe');
       }, 2000);
     }

@@ -21,7 +21,9 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
       if (onResult) {
         // Get current score from the game if possible
         const currentScore = (container as any).currentScore || 0;
-        onResult(currentScore);
+        if (currentScore > 0) {
+          onResult(currentScore);
+        }
       }
       game.unmount(container);
       onExit();
@@ -33,9 +35,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
     game.mount(container, (score: number) => {
       // Game ended, handle result
       console.log(`Game ended with score: ${score}`);
-      if (onResult) {
-        onResult(score);
-      }
+      // Don't call onResult here - let the player decide when to finish
     });
 
     // Cleanup on unmount
@@ -56,7 +56,9 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
               if (onResult) {
                 // Get current score from the game if possible
                 const currentScore = (containerRef.current as any)?.currentScore || 0;
-                onResult(currentScore);
+                if (currentScore > 0) {
+                  onResult(currentScore);
+                }
               }
               game.unmount(containerRef.current!);
               onExit();
