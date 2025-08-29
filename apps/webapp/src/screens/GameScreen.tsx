@@ -35,9 +35,10 @@ export const GameScreen: React.FC = () => {
 
     haptics.impactOccurred('heavy');
 
-    // Calculate earned ILL
-    const earned = Math.max(5, Math.round(score / 100));
+    // Calculate earned ILL - 1 ILL per 100 points, minimum 1 ILL
+    const earned = Math.max(1, Math.round(score / 100));
     setEarnedILL(earned);
+    console.log('Score:', score, 'Earned ILL:', earned);
 
     try {
       // Save score

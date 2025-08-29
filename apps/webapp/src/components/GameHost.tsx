@@ -59,6 +59,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
                 const currentScore = (containerRef.current as any)?.currentScore || 0;
                 console.log('Current score from container:', currentScore);
                 if (currentScore > 0) {
+                  console.log('Calling onResult with score:', currentScore);
                   onResult(currentScore);
                 }
               }
