@@ -54,6 +54,15 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
       // Expand the app
       tg.expand();
       tg.ready();
+    } else {
+      // Fallback for testing outside Telegram
+      console.log('Telegram WebApp not available, using test user');
+      setUser({
+        id: 123456789,
+        first_name: 'Test',
+        last_name: 'User',
+        username: 'testuser'
+      });
     }
   }, []);
 
