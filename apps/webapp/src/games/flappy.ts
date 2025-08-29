@@ -44,6 +44,14 @@ class FlappyScene extends Phaser.Scene {
       strokeThickness: 2
     });
 
+    // ILL formula text
+    this.add.text(20, 40, 'ILL: 1 per 100 points', {
+      fontSize: '16px',
+      color: '#8b5cf6',
+      stroke: '#000',
+      strokeThickness: 1
+    });
+
     // Input handling
     this.input.on('pointerdown', () => {
       if (!this.gameOver) {
@@ -76,12 +84,15 @@ class FlappyScene extends Phaser.Scene {
 
   private updateDifficulty() {
     // Increase difficulty based on score
-    if (this.score >= 20) {
+    if (this.score >= 30) {
       this.difficulty = 3;
       this.pipeSpawnDelay = 800; // Faster pipe spawning
-    } else if (this.score >= 10) {
+    } else if (this.score >= 20) {
       this.difficulty = 2;
       this.pipeSpawnDelay = 1200; // Medium pipe spawning
+    } else if (this.score >= 10) {
+      this.difficulty = 1;
+      this.pipeSpawnDelay = 1500; // Normal pipe spawning
     } else {
       this.difficulty = 1;
       this.pipeSpawnDelay = 1500; // Normal pipe spawning
