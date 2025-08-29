@@ -9,6 +9,7 @@ import { WalletScreen } from './screens/WalletScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { GameScreen } from './screens/GameScreen';
 import { Styleguide } from './pages/Styleguide';
+import { AssetsPreview } from './pages/AssetsPreview';
 
 const AppContent: React.FC = () => {
   const { user } = useTelegram();
@@ -60,6 +61,7 @@ const AppContent: React.FC = () => {
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/play/:gameId" element={<GameScreen />} />
         <Route path="/styleguide" element={<Styleguide />} />
+        <Route path="/assets" element={<AssetsPreview />} />
         <Route path="/" element={<Navigate to="/universe" replace />} />
         <Route path="*" element={<Navigate to="/universe" replace />} />
       </Routes>
