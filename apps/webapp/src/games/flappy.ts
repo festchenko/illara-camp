@@ -195,6 +195,9 @@ class FlappyScene extends Phaser.Scene {
       stroke: '#000',
       strokeThickness: 2
     }).setOrigin(0.5);
+    
+    // Update container with max score
+    (this.game.config.parent as any).currentScore = this.maxScore;
 
     // Add restart button
     const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.5, 'Play Again', {
@@ -261,6 +264,9 @@ class FlappyScene extends Phaser.Scene {
         child.destroy();
       }
     });
+    
+    // Keep max score in container for GameHost to access
+    (this.game.config.parent as any).currentScore = this.maxScore;
   }
 
   update() {

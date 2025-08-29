@@ -91,10 +91,9 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
         ref={containerRef} 
         className="flex-1 w-full bg-black"
         style={{ 
-          minHeight: '400px',
           height: 'calc(100vh - 120px)', // Full viewport height minus header
-          width: '100vw',
-          maxWidth: '100%'
+          width: '100%',
+          position: 'relative'
         }}
       />
     </div>
