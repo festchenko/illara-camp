@@ -40,6 +40,9 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
     if (window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
       
+      console.log('Telegram WebApp found:', tg);
+      console.log('initDataUnsafe:', tg.initDataUnsafe);
+      
       // Set up theme
       setTheme(tg.colorScheme as 'light' | 'dark');
       tg.onEvent('themeChanged', () => {
@@ -48,7 +51,45 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
 
       // Get user info
       if (tg.initDataUnsafe?.user) {
+        console.log('Setting real user:', tg.initDataUnsafe.user);
         setUser(tg.initDataUnsafe.user);
+      } else if (tg.initData) {
+        // Try to parse initData manually
+        console.log('initData available, trying to parse...');
+        try {
+          const urlParams = new URLSearchParams(tg.initData);
+          const userStr = urlParams.get('user');
+          if (userStr) {
+            const user = JSON.parse(decodeURIComponent(userStr));
+            console.log('Parsed user from initData:', user);
+            setUser(user);
+          } else {
+            console.log('No user in initData');
+            setUser({
+              id: 123456789,
+              first_name: 'Test',
+              last_name: 'User',
+              username: 'testuser'
+            });
+          }
+        } catch (error) {
+          console.log('Error parsing initData:', error);
+          setUser({
+            id: 123456789,
+            first_name: 'Test',
+            last_name: 'User',
+            username: 'testuser'
+          });
+        }
+      } else {
+        console.log('No user data available');
+        // Fallback for testing outside Telegram
+        setUser({
+          id: 123456789,
+          first_name: 'Test',
+          last_name: 'User',
+          username: 'testuser'
+        });
       }
 
       // Expand the app
