@@ -41,7 +41,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex-shrink-0 p-4 bg-black/20">
+      <div className="flex-shrink-0 p-4 bg-black/20" style={{ zIndex: 1000, position: 'relative' }}>
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => {
@@ -50,7 +50,16 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
               onExit();
             }}
             className="btn-secondary text-sm px-3 py-1 hover:bg-secondary-600 active:bg-secondary-700"
-            style={{ zIndex: 1000, position: 'relative' }}
+            style={{ 
+              zIndex: 1001, 
+              position: 'relative',
+              backgroundColor: '#8b5cf6',
+              color: 'white',
+              border: '2px solid #7c3aed',
+              borderRadius: '8px',
+              padding: '8px 16px',
+              cursor: 'pointer'
+            }}
           >
             ← Exit
           </button>

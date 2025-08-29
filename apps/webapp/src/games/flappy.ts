@@ -84,7 +84,6 @@ class FlappyScene extends Phaser.Scene {
     this.physics.add.existing(topPipe);
     const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body;
     topPipeBody.setImmovable(true);
-    topPipeBody.setVelocityX(-200); // Move left
     this.pipes.add(topPipe);
 
     // Bottom pipe
@@ -96,13 +95,18 @@ class FlappyScene extends Phaser.Scene {
     this.physics.add.existing(bottomPipe);
     const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body;
     bottomPipeBody.setImmovable(true);
-    bottomPipeBody.setVelocityX(-200); // Move left
     this.pipes.add(bottomPipe);
 
-    // Destroy pipes when they go off screen
-    this.time.delayedCall(4000, () => {
-      if (topPipe.active) topPipe.destroy();
-      if (bottomPipe.active) bottomPipe.destroy();
+    // Move pipes with tween
+    this.tweens.add({
+      targets: [topPipe, bottomPipe],
+      x: -100,
+      duration: 4000,
+      ease: 'Linear',
+      onComplete: () => {
+        topPipe.destroy();
+        bottomPipe.destroy();
+      }
     });
 
     // Add score trigger
@@ -114,11 +118,16 @@ class FlappyScene extends Phaser.Scene {
     this.physics.add.existing(scoreTrigger);
     const scoreTriggerBody = scoreTrigger.body as Phaser.Physics.Arcade.Body;
     scoreTriggerBody.setImmovable(true);
-    scoreTriggerBody.setVelocityX(-200); // Move left with pipes
     
-    // Destroy score trigger when it goes off screen
-    this.time.delayedCall(4000, () => {
-      if (scoreTrigger.active) scoreTrigger.destroy();
+    // Move score trigger with tween
+    this.tweens.add({
+      targets: scoreTrigger,
+      x: -100,
+      duration: 4000,
+      ease: 'Linear',
+      onComplete: () => {
+        scoreTrigger.destroy();
+      }
     });
 
     // Check if bird passes the trigger
