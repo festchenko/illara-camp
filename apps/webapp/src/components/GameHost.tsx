@@ -45,10 +45,12 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => {
+              console.log('Exit button clicked');
               game.unmount();
               onExit();
             }}
-            className="btn-secondary text-sm px-3 py-1"
+            className="btn-secondary text-sm px-3 py-1 hover:bg-secondary-600 active:bg-secondary-700"
+            style={{ zIndex: 1000, position: 'relative' }}
           >
             ← Exit
           </button>

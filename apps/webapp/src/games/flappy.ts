@@ -29,7 +29,9 @@ class FlappyScene extends Phaser.Scene {
     this.bird.y = 300;
     
     this.physics.add.existing(this.bird);
-    (this.bird.body as Phaser.Physics.Arcade.Body).setCollideWorldBounds(true);
+    const birdBody = this.bird.body as Phaser.Physics.Arcade.Body;
+    birdBody.setCollideWorldBounds(true);
+    birdBody.setBounce(0.1);
 
     // Create pipes group
     this.pipes = this.physics.add.group();
@@ -80,7 +82,9 @@ class FlappyScene extends Phaser.Scene {
     topPipe.x = 800;
     topPipe.y = 0;
     this.physics.add.existing(topPipe);
-    (topPipe.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+    const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body;
+    topPipeBody.setImmovable(true);
+    topPipeBody.setVelocityX(-200); // Move left
     this.pipes.add(topPipe);
 
     // Bottom pipe
@@ -90,19 +94,15 @@ class FlappyScene extends Phaser.Scene {
     bottomPipe.x = 800;
     bottomPipe.y = gapY + gap;
     this.physics.add.existing(bottomPipe);
-    (bottomPipe.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+    const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body;
+    bottomPipeBody.setImmovable(true);
+    bottomPipeBody.setVelocityX(-200); // Move left
     this.pipes.add(bottomPipe);
 
-    // Move pipes
-    this.tweens.add({
-      targets: [topPipe, bottomPipe],
-      x: -100,
-      duration: 3000,
-      ease: 'Linear',
-      onComplete: () => {
-        topPipe.destroy();
-        bottomPipe.destroy();
-      }
+    // Destroy pipes when they go off screen
+    this.time.delayedCall(4000, () => {
+      if (topPipe.active) topPipe.destroy();
+      if (bottomPipe.active) bottomPipe.destroy();
     });
 
     // Add score trigger
@@ -112,17 +112,13 @@ class FlappyScene extends Phaser.Scene {
     scoreTrigger.x = 800;
     scoreTrigger.y = gapY;
     this.physics.add.existing(scoreTrigger);
-    (scoreTrigger.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+    const scoreTriggerBody = scoreTrigger.body as Phaser.Physics.Arcade.Body;
+    scoreTriggerBody.setImmovable(true);
+    scoreTriggerBody.setVelocityX(-200); // Move left with pipes
     
-    // Move score trigger with pipes
-    this.tweens.add({
-      targets: scoreTrigger,
-      x: -100,
-      duration: 3000,
-      ease: 'Linear',
-      onComplete: () => {
-        scoreTrigger.destroy();
-      }
+    // Destroy score trigger when it goes off screen
+    this.time.delayedCall(4000, () => {
+      if (scoreTrigger.active) scoreTrigger.destroy();
     });
 
     // Check if bird passes the trigger
