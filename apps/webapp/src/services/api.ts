@@ -51,21 +51,35 @@ class ApiService {
 
   async getWallet(): Promise<Wallet> {
     console.log('Getting wallet with headers:', this.getHeaders());
-    const response = await fetch(`${API_BASE}/wallet`, {
-      headers: this.getHeaders(),
-    });
     
-    console.log('Wallet response status:', response.status);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Wallet error response:', errorText);
-      throw new Error(`Failed to fetch wallet: ${response.status} ${errorText}`);
+    try {
+      const response = await fetch(`${API_BASE}/wallet`, {
+        headers: this.getHeaders(),
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
+      console.log('Wallet response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Wallet error response:', errorText);
+        throw new Error(`Failed to fetch wallet: ${response.status} ${errorText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Wallet response:', result);
+      return result;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Wallet request timed out');
+      }
+      throw error;
     }
-    
-    const result = await response.json();
-    console.log('Wallet response:', result);
-    return result;
   }
 
   async earnWallet(amount: number, reason: string) {

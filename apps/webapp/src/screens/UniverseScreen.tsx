@@ -69,7 +69,9 @@ export const UniverseScreen: React.FC = () => {
 
   const loadWallet = async () => {
     try {
+      console.log('Loading wallet for user:', user?.id);
       const walletData = await api.getWallet();
+      console.log('Wallet loaded:', walletData);
       setWallet(walletData);
       
       // Update planet unlock status
@@ -78,6 +80,11 @@ export const UniverseScreen: React.FC = () => {
       });
     } catch (error) {
       console.error('Failed to load wallet:', error);
+      // Set default wallet to prevent infinite loading
+      setWallet({
+        balance: 0,
+        lastTx: []
+      });
     } finally {
       setLoading(false);
     }
