@@ -308,10 +308,8 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: containerWidth,
-        height: containerHeight
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
       }
     };
 

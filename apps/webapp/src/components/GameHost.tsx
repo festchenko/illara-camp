@@ -39,16 +39,26 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
       // Don't call onResult here - let the player decide when to finish
     });
 
+    // Handle window resize
+    const handleResize = () => {
+      console.log('Window resized, container dimensions:', container.clientWidth, 'x', container.clientHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
     // Cleanup on unmount
     return () => {
       game.unmount(container);
       backButton.hide();
       mainButton.hide();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, [game, onExit, backButton, mainButton]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col" style={{ height: '100vh' }}>
       <div className="flex-shrink-0 p-4 bg-black/20" style={{ zIndex: 1000, position: 'relative' }}>
         <div className="flex items-center justify-between mb-2">
           <button
@@ -94,7 +104,8 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
         style={{ 
           height: 'calc(100vh - 120px)', // Full viewport height minus header
           width: '100%',
-          position: 'relative'
+          position: 'relative',
+          overflow: 'hidden'
         }}
       />
     </div>
