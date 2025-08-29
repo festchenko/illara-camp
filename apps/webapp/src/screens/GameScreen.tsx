@@ -89,7 +89,7 @@ export const GameScreen: React.FC = () => {
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold text-white mb-2">Game Complete!</h2>
             <p className="text-white/80 mb-4">
-              You earned <span className="text-primary-400 font-bold">{earnedILL} ILL</span>!
+              You earned <span className="text-primary font-bold">{earnedILL} ILL</span>!
             </p>
             <div className="text-white/60 text-sm">
               Returning to universe...

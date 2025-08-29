@@ -87,7 +87,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
               game.unmount(containerRef.current!);
               onExit();
             }}
-            className="btn-secondary text-sm px-3 py-1 hover:bg-secondary-600 active:bg-secondary-700"
+            className="btn-secondary text-sm px-3 py-1 hover:bg-secondary active:bg-secondary"
             style={{ 
               zIndex: 1001, 
               position: 'relative',

@@ -94,7 +94,7 @@ export const StoreScreen: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-primary-900 to-secondary-900">
+    <div className="w-full h-full flex flex-col bg-bg">
       {/* Header */}
       <div className="flex-shrink-0 p-4 bg-black/20">
         <div className="flex items-center justify-between">
@@ -135,7 +135,7 @@ export const StoreScreen: React.FC = () => {
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
                 <p className="text-white/80 text-sm mb-2">{item.description}</p>
-                <div className="text-primary-400 font-bold">{item.price} ILL</div>
+                <div className="text-primary font-bold">{item.price} ILL</div>
               </div>
               <button
                 onClick={() => handlePurchase(item)}
@@ -143,7 +143,7 @@ export const StoreScreen: React.FC = () => {
                 className={`
                   px-4 py-2 rounded-lg font-bold transition-colors duration-200
                   ${wallet && wallet.balance >= item.price
-                    ? 'bg-primary-500 hover:bg-primary-600 text-white'
+                    ? 'bg-primary hover:bg-primary text-white'
                     : 'bg-gray-500 text-gray-300 cursor-not-allowed'
                   }
                 `}
@@ -168,7 +168,7 @@ export const StoreScreen: React.FC = () => {
             </h3>
             <div className="text-center mb-4">
               <p className="text-white/80 mb-2">Your coupon code:</p>
-              <div className="bg-primary-500 text-white font-mono p-3 rounded-lg break-all">
+              <div className="bg-primary text-white font-mono p-3 rounded-lg break-all">
                 {showCoupon.code}
               </div>
             </div>

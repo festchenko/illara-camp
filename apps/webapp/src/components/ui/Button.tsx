@@ -16,9 +16,9 @@ interface ButtonProps {
 }
 
 const variantStyles = {
-  primary: 'bg-primary text-white hover:bg-primary/90 active:bg-primary/80',
-  secondary: 'bg-secondary text-ink900 hover:bg-secondary/90 active:bg-secondary/80',
-  ghost: 'bg-transparent text-text hover:bg-card active:bg-card/80 border border-card'
+  primary: 'bg-primary text-white hover:bg-primary active:bg-primary',
+  secondary: 'bg-secondary text-ink900 hover:bg-secondary active:bg-secondary',
+  ghost: 'bg-transparent text-text hover:bg-card active:bg-card border border-card'
 };
 
 const sizeStyles = {

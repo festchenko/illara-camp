@@ -42,7 +42,7 @@ export function BadgeCoin({
       className={`
         inline-flex items-center ${config.gap} ${config.padding}
         bg-secondary text-ink900 font-semibold rounded-full
-        shadow-soft border border-warning/20
+        shadow-soft border border-warning
         ${onClick ? 'cursor-pointer hover:scale-105 transition-transform' : ''}
         ${className}
       `}

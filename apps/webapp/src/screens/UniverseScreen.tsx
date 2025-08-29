@@ -111,7 +111,7 @@ export const UniverseScreen: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-primary-900 to-secondary-900">
+    <div className="w-full h-full flex flex-col bg-bg">
       {/* Header */}
       <div className="flex-shrink-0 p-4 bg-black/20">
         <div className="flex items-center justify-between">

@@ -38,7 +38,7 @@ export const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-primary-900 to-secondary-900">
+    <div className="w-full h-full flex flex-col bg-bg">
       {/* Header */}
       <div className="flex-shrink-0 p-4 bg-black/20">
         <div className="flex items-center justify-between">
@@ -66,7 +66,7 @@ export const ProfileScreen: React.FC = () => {
           animate={{ scale: 1, opacity: 1 }}
           className="card text-center"
         >
-          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-3xl">
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-3xl">
             {user?.photo_url ? (
               <img 
                 src={user.photo_url} 
@@ -107,11 +107,11 @@ export const ProfileScreen: React.FC = () => {
           <h3 className="text-lg font-bold text-white mb-3">Statistics</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-400">3</div>
+              <div className="text-2xl font-bold text-primary">3</div>
               <div className="text-white/60 text-sm">Games Played</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-secondary-400">150</div>
+              <div className="text-2xl font-bold text-secondary">150</div>
               <div className="text-white/60 text-sm">Total Score</div>
             </div>
           </div>

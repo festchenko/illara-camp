@@ -41,7 +41,7 @@ const AppContent: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-900 to-secondary-900">
+      <div className="w-full h-full flex items-center justify-center bg-bg">
         <div className="text-center">
           <div className="text-6xl mb-4">🚀</div>
           <h1 className="text-2xl font-bold text-white mb-2">Illara Camp</h1>
