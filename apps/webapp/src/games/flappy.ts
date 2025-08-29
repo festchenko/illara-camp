@@ -285,6 +285,8 @@ export const flappyGame: Game = {
     const containerWidth = container.clientWidth || window.innerWidth;
     const containerHeight = container.clientHeight || window.innerHeight;
     
+    console.log('Container dimensions:', containerWidth, 'x', containerHeight);
+    
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: containerWidth,
@@ -299,7 +301,7 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.NONE,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH
       }
     };
