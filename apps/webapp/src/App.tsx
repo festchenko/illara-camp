@@ -11,7 +11,7 @@ import { GameScreen } from './screens/GameScreen';
 import { Styleguide } from './pages/Styleguide';
 import { AssetsPreview } from './pages/AssetsPreview';
 import { AudioPreview } from './pages/AudioPreview';
-import { AudioEnableBanner } from './audio/useSFX';
+import { AudioEnableBanner } from './audio/useSFX.tsx';
 
 const AppContent: React.FC = () => {
   const { user } = useTelegram();

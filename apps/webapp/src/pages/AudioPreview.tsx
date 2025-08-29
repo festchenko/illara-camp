@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSFX } from '../audio/useSFX';
+import { useSFX } from '../audio/useSFX.tsx';
 import { SfxName } from '../audio/engine';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';

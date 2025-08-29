@@ -1,7 +1,7 @@
 // Main audio system exports
 export * from './context';
 export * from './engine';
-export * from './useSFX';
+export * from './useSFX.tsx';
 export * from './presets';
 export * from './synth';
 
