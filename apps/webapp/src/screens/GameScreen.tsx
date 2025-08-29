@@ -77,7 +77,7 @@ export const GameScreen: React.FC = () => {
 
   return (
     <div className="w-full h-full relative">
-      <GameHost game={game} onExit={handleExit} />
+      <GameHost game={game} onExit={handleExit} onResult={handleGameResult} />
       
       {/* Result overlay */}
       {showResult && (

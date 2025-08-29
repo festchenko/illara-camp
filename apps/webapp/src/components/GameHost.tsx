@@ -5,9 +5,10 @@ import { useTelegram } from '../contexts/TelegramContext';
 interface GameHostProps {
   game: Game;
   onExit: () => void;
+  onResult?: (score: number) => void;
 }
 
-export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
+export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { backButton, mainButton } = useTelegram();
 
@@ -27,8 +28,9 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit }) => {
     game.mount(container, (score: number) => {
       // Game ended, handle result
       console.log(`Game ended with score: ${score}`);
-      game.unmount();
-      onExit();
+      if (onResult) {
+        onResult(score);
+      }
     });
 
     // Cleanup on unmount
