@@ -7,6 +7,62 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
+// Initialize database
+async function initializeDatabase() {
+  try {
+    console.log('Initializing database...');
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "User" (
+      "id" SERIAL PRIMARY KEY,
+      "tg_id" TEXT UNIQUE NOT NULL,
+      "name" TEXT,
+      "avatar" TEXT,
+      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`;
+    
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Wallet" (
+      "user_id" INTEGER PRIMARY KEY,
+      "balance" INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE
+    )`;
+    
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Tx" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" INTEGER NOT NULL,
+      "amount" INTEGER NOT NULL,
+      "type" TEXT NOT NULL,
+      "meta" TEXT,
+      "ts" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE
+    )`;
+    
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Reward" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" INTEGER NOT NULL,
+      "type" TEXT NOT NULL,
+      "code" TEXT UNIQUE NOT NULL,
+      "status" TEXT NOT NULL DEFAULT 'active',
+      "ts" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE
+    )`;
+    
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Score" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" INTEGER NOT NULL,
+      "game_id" TEXT NOT NULL,
+      "score" INTEGER NOT NULL,
+      "ts" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE
+    )`;
+    
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.error('Database initialization error:', error);
+  }
+}
+
+// Initialize database on startup
+initializeDatabase();
+
 app.use(cors());
 app.use(express.json());
 
