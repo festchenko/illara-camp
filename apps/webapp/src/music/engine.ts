@@ -81,11 +81,11 @@ export async function startPreset(name: MusicPresetName): Promise<void> {
     return;
   }
   
-  const stopFn = pattern(engine.ctx, engine.transport, engine.musicGain);
+  const patternResult = pattern(engine.ctx, engine.transport, engine.musicGain);
   
-  // Verify stopFn is a function
-  if (typeof stopFn !== 'function') {
-    console.error('Pattern did not return a valid stop function');
+  // Verify patternResult has a stop function
+  if (!patternResult || typeof patternResult.stop !== 'function') {
+    console.error('Pattern did not return a valid stop function', patternResult);
     return;
   }
   
@@ -93,7 +93,7 @@ export async function startPreset(name: MusicPresetName): Promise<void> {
   engine.musicGain.gain.setValueAtTime(0, startTime);
   engine.musicGain.gain.linearRampToValueAtTime(0.35, startTime + 0.6);
   
-  engine.current = { name, stop: stopFn };
+  engine.current = { name, stop: patternResult.stop };
 }
 
 export function stopMusic(immediate: boolean = false): void {

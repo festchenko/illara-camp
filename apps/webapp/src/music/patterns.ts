@@ -94,11 +94,15 @@ export function createHappyPattern(ctx: AudioContext, t: Transport, out: GainNod
   // Start the pattern
   scheduleHappy(t.getBeat());
   
+  const stopFn = () => {
+    console.log('Stopping happy pattern');
+    running = false;
+  };
+  
+  console.log('Happy pattern created, stop function:', typeof stopFn);
+  
   return {
-    stop: () => {
-      console.log('Stopping happy pattern');
-      running = false;
-    }
+    stop: stopFn
   };
 }
 
