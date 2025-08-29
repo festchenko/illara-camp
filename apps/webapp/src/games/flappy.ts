@@ -8,14 +8,11 @@ class FlappyScene extends Phaser.Scene {
   private score: number = 0;
   private maxScore: number = 0;
   private gameOver: boolean = false;
-  private onResult!: (score: number) => void;
+  private difficulty: number = 1;
+  private pipeSpawnDelay: number = 1500;
 
   constructor() {
     super({ key: 'FlappyScene' });
-  }
-
-  init(data: { onResult: (score: number) => void }) {
-    this.onResult = data.onResult;
   }
 
   create() {
@@ -56,7 +53,7 @@ class FlappyScene extends Phaser.Scene {
 
     // Start spawning pipes
     this.time.addEvent({
-      delay: 1500,
+      delay: this.pipeSpawnDelay,
       callback: this.spawnPipe,
       callbackScope: this,
       loop: true
@@ -75,6 +72,23 @@ class FlappyScene extends Phaser.Scene {
     if (this.bird.body) {
       (this.bird.body as Phaser.Physics.Arcade.Body).setVelocityY(-400);
     }
+  }
+
+  private updateDifficulty() {
+    // Increase difficulty based on score
+    if (this.score >= 20) {
+      this.difficulty = 3;
+      this.pipeSpawnDelay = 800; // Faster pipe spawning
+    } else if (this.score >= 10) {
+      this.difficulty = 2;
+      this.pipeSpawnDelay = 1200; // Medium pipe spawning
+    } else {
+      this.difficulty = 1;
+      this.pipeSpawnDelay = 1500; // Normal pipe spawning
+    }
+    
+    // Update difficulty in container for GameHost to access
+    (this.game.config.parent as any).currentDifficulty = this.difficulty;
   }
 
   private spawnPipe() {
@@ -136,9 +150,11 @@ class FlappyScene extends Phaser.Scene {
           if (this.score > this.maxScore) {
             this.maxScore = this.score;
           }
+          // Update difficulty based on score
+          this.updateDifficulty();
           // Save max score to container for GameHost to access
           (this.game.config.parent as any).currentScore = this.maxScore;
-          console.log('Score updated:', this.score, 'Max score:', this.maxScore);
+          console.log('Score updated:', this.score, 'Max score:', this.maxScore, 'Difficulty:', this.difficulty);
           scored = true;
         }
       },
@@ -315,8 +331,8 @@ export const flappyGame: Game = {
 
     const game = new Phaser.Game(config);
     
-    // Pass onResult to the scene
-    game.scene.start('FlappyScene', { onResult });
+    // Start the scene
+    game.scene.start('FlappyScene');
     
     // Store game instance for cleanup
     (container as any).phaserGame = game;

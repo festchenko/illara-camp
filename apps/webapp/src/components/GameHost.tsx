@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Game } from '@illara-camp/shared';
 import { useTelegram } from '../contexts/TelegramContext';
 
@@ -11,6 +11,7 @@ interface GameHostProps {
 export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { backButton, mainButton } = useTelegram();
+  const [currentDifficulty, setCurrentDifficulty] = useState(1);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -44,6 +45,15 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
       console.log('Window resized, container dimensions:', container.clientWidth, 'x', container.clientHeight);
     };
 
+    // Update difficulty from container
+    const updateDifficulty = () => {
+      const difficulty = (container as any)?.currentDifficulty || 1;
+      setCurrentDifficulty(difficulty);
+    };
+
+    // Check difficulty every second
+    const difficultyInterval = setInterval(updateDifficulty, 1000);
+
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
 
@@ -54,6 +64,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
       mainButton.hide();
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+      clearInterval(difficultyInterval);
     };
   }, [game, onExit, backButton, mainButton]);
 
@@ -94,7 +105,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
           <div className="w-16"></div> {/* Spacer */}
         </div>
         <p className="text-sm text-center text-gray-300">
-          Recommended session: {game.recommendedSessionSec}s | Difficulty: {game.difficulty}/3
+          Recommended session: {game.recommendedSessionSec}s | Difficulty: {currentDifficulty}/3
         </p>
       </div>
       
