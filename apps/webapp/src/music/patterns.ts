@@ -6,62 +6,59 @@ import { monoSynth, padSynth, bassSynth, note, CHORDS } from './instruments';
 export type MusicPresetName = 'happy' | 'cosmic' | 'chill';
 export type PatternFn = (ctx: AudioContext, t: Transport, out: GainNode) => { stop(): void };
 
-// Happy pattern: cheerful and uplifting melody
+// 8-bit game pattern: dynamic and energetic
 export function createHappyPattern(ctx: AudioContext, t: Transport, out: GainNode): { stop(): void } {
   let running = true;
   
-  // Create synths with warmer tones
-  const leadSynth = monoSynth(ctx, { type: 'sine', attack: 0.02, decay: 0.15, sustain: 0.4, release: 0.2 });
-  const padSynthInst = padSynth(ctx, { type: 'triangle', attack: 0.3, decay: 0.5, sustain: 0.6, release: 0.8 });
-  const bassSynthInst = bassSynth(ctx, { type: 'sawtooth', lpf: 350, q: 8 });
+  // Create 8-bit style synths
+  const leadSynth = monoSynth(ctx, { type: 'square', attack: 0.001, decay: 0.1, sustain: 0.3, release: 0.15 });
+  const bassSynthInst = bassSynth(ctx, { type: 'square', lpf: 400, q: 4 });
+  const noiseSynth = monoSynth(ctx, { type: 'sawtooth', attack: 0.001, decay: 0.05, sustain: 0.0, release: 0.1 });
   
-  // Beautiful C major melody progression
+  // Dynamic 8-bit melody with jumps and runs
   const melodyNotes = [
-    note('C5'), note('E5'), note('G5'), note('C6'), // C major arpeggio
-    note('D5'), note('F5'), note('A5'), note('C6'), // D minor
-    note('E5'), note('G5'), note('B5'), note('C6'), // E minor
-    note('F5'), note('A5'), note('C6'), note('C6'), // F major
+    // Bar 1: Upward run
+    note('C5'), note('D5'), note('E5'), note('G5'),
+    // Bar 2: Downward run  
+    note('G5'), note('E5'), note('D5'), note('C5'),
+    // Bar 3: Jump pattern
+    note('C5'), note('G5'), note('C6'), note('G5'),
+    // Bar 4: Descending
+    note('F5'), note('E5'), note('D5'), note('C5'),
   ];
   
-  // Harmonious chord progression: C - Am - F - G
-  const padChords = [
+  // 8-bit chord progression: C - Am - F - G
+  const chordNotes = [
     [note('C3'), note('E3'), note('G3')], // C major
     [note('A3'), note('C4'), note('E4')], // A minor
     [note('F3'), note('A3'), note('C4')], // F major
     [note('G3'), note('B3'), note('D4')], // G major
   ];
   
-  // Bass line with movement
+  // Punchy bass line
   const bassNotes = [note('C3'), note('A3'), note('F3'), note('G3')];
   
-  const scheduleHappy = (startBeat: number) => {
+  // Drum pattern (using noise)
+  const drumPattern = [1, 0, 1, 0, 1, 0, 1, 0]; // Kick on every beat
+  
+  const schedule8Bit = (startBeat: number) => {
     if (!running) return;
     
     // Schedule for 8 bars
     for (let bar = 0; bar < 8; bar++) {
-      const chordIndex = bar % padChords.length;
-      const chord = padChords[chordIndex];
+      const chordIndex = bar % chordNotes.length;
+      const chord = chordNotes[chordIndex];
       const bassNote = bassNotes[bar % bassNotes.length];
       
-      // Pad chord (whole note)
-      const padTime = startBeat + bar * 4;
-      t.schedule(() => {
-        if (running) {
-          chord.forEach((freq, i) => {
-            padSynthInst.trigger(freq, 3.5, t.getTime(), 0.08);
-          });
-        }
-      }, padTime - t.getBeat());
-      
-      // Bass note (on downbeat)
+      // Bass note (on downbeat) - punchy 8-bit style
       const bassTime = startBeat + bar * 4;
       t.schedule(() => {
         if (running) {
-          bassSynthInst.trigger(bassNote, 1.8, t.getTime(), 0.25);
+          bassSynthInst.trigger(bassNote, 1.0, t.getTime(), 0.4);
         }
       }, bassTime - t.getBeat());
       
-      // Melody line (quarter notes with some eighth notes)
+      // Dynamic melody line (eighth notes for energy)
       for (let beat = 0; beat < 4; beat++) {
         const noteIndex = (bar * 4 + beat) % melodyNotes.length;
         const melodyTime = startBeat + bar * 4 + beat;
@@ -69,30 +66,54 @@ export function createHappyPattern(ctx: AudioContext, t: Transport, out: GainNod
         // Main melody note
         t.schedule(() => {
           if (running) {
-            leadSynth.trigger(melodyNotes[noteIndex], 0.8, t.getTime(), 0.3);
+            leadSynth.trigger(melodyNotes[noteIndex], 0.4, t.getTime(), 0.35);
           }
         }, melodyTime - t.getBeat());
         
-        // Grace note on offbeat (every other beat)
+        // Offbeat accent (every other beat)
         if (beat % 2 === 1) {
-          const graceTime = startBeat + bar * 4 + beat - 0.25;
+          const accentTime = startBeat + bar * 4 + beat - 0.25;
           t.schedule(() => {
             if (running) {
-              leadSynth.trigger(melodyNotes[noteIndex] * 1.25, 0.2, t.getTime(), 0.15);
+              leadSynth.trigger(melodyNotes[noteIndex] * 1.5, 0.15, t.getTime(), 0.2);
             }
-          }, graceTime - t.getBeat());
+          }, accentTime - t.getBeat());
         }
+      }
+      
+      // Drum kicks (every beat for energy)
+      for (let beat = 0; beat < 4; beat++) {
+        if (drumPattern[beat]) {
+          const drumTime = startBeat + bar * 4 + beat;
+          t.schedule(() => {
+            if (running) {
+              noiseSynth.trigger(100, 0.1, t.getTime(), 0.3);
+            }
+          }, drumTime - t.getBeat());
+        }
+      }
+      
+      // Chord stabs (every 2 bars for variety)
+      if (bar % 2 === 0) {
+        const chordTime = startBeat + bar * 4 + 2;
+        t.schedule(() => {
+          if (running) {
+            chord.forEach((freq: number) => {
+              leadSynth.trigger(freq, 0.3, t.getTime(), 0.15);
+            });
+          }
+        }, chordTime - t.getBeat());
       }
     }
     
     // Reschedule for next 8 bars
     if (running) {
-      t.schedule(() => scheduleHappy(startBeat + 32), 32);
+      t.schedule(() => schedule8Bit(startBeat + 32), 32);
     }
   };
   
   // Start the pattern
-  scheduleHappy(t.getBeat());
+  schedule8Bit(t.getBeat());
   
   const stopFn = () => {
     console.log('Stopping happy pattern');
@@ -106,63 +127,65 @@ export function createHappyPattern(ctx: AudioContext, t: Transport, out: GainNod
   };
 }
 
-// Cosmic pattern: dreamy and ethereal
+// Cosmic pattern: space adventure
 export function createCosmicPattern(ctx: AudioContext, t: Transport, out: GainNode): { stop(): void } {
   let running = true;
   
-  // Create synths with ethereal qualities
-  const padSynthInst = padSynth(ctx, { type: 'sine', attack: 0.8, decay: 1.2, sustain: 0.7, release: 1.5 });
-  const leadSynth = monoSynth(ctx, { type: 'triangle', attack: 0.1, decay: 0.4, sustain: 0.6, release: 0.8 });
-  const bellSynth = monoSynth(ctx, { type: 'sine', attack: 0.05, decay: 0.3, sustain: 0.2, release: 1.2 });
+  // Create space synths
+  const leadSynth = monoSynth(ctx, { type: 'square', attack: 0.02, decay: 0.3, sustain: 0.5, release: 0.6 });
+  const bassSynthInst = bassSynth(ctx, { type: 'sawtooth', lpf: 300, q: 6 });
+  const spaceSynth = monoSynth(ctx, { type: 'triangle', attack: 0.1, decay: 0.8, sustain: 0.4, release: 1.0 });
   
-  // Dreamy chord progression: Am - Em - F - C
-  const padChords = [
+  // Space chord progression: Am - F - C - G
+  const spaceChords = [
     [note('A3'), note('C4'), note('E4')], // Am
-    [note('E3'), note('G3'), note('B3')], // Em
     [note('F3'), note('A3'), note('C4')], // F
     [note('C3'), note('E3'), note('G3')], // C
+    [note('G3'), note('B3'), note('D4')], // G
   ];
   
-  // Ethereal melody with gentle movement
-  const melodyNotes = [note('C5'), note('E5'), note('G5'), note('A5'), note('C6'), note('A5'), note('G5'), note('E5')];
+  // Space melody with jumps
+  const melodyNotes = [note('C5'), note('E5'), note('G5'), note('C6'), note('G5'), note('E5'), note('C5'), note('A4')];
+  
+  // Bass line
+  const bassNotes = [note('A3'), note('F3'), note('C3'), note('G3')];
   
   const scheduleCosmic = (startBeat: number) => {
     if (!running) return;
     
     // Schedule for 8 bars
     for (let bar = 0; bar < 8; bar++) {
-      const chordIndex = bar % padChords.length;
-      const chord = padChords[chordIndex];
+      const chordIndex = bar % spaceChords.length;
+      const chord = spaceChords[chordIndex];
+      const bassNote = bassNotes[bar % bassNotes.length];
       
-      // Pad chord (whole note = 4 beats)
-      const padTime = startBeat + bar * 4;
+      // Bass note (on downbeat)
+      const bassTime = startBeat + bar * 4;
       t.schedule(() => {
         if (running) {
-          chord.forEach((freq, i) => {
-            padSynthInst.trigger(freq, 3.5, t.getTime(), 0.1);
-          });
+          bassSynthInst.trigger(bassNote, 1.5, t.getTime(), 0.3);
         }
-      }, padTime - t.getBeat());
+      }, bassTime - t.getBeat());
       
-      // Ethereal melody (half notes)
-      for (let beat = 0; beat < 4; beat += 2) {
-        const noteIndex = (bar * 2 + beat / 2) % melodyNotes.length;
+      // Space melody (quarter notes)
+      for (let beat = 0; beat < 4; beat++) {
+        const noteIndex = (bar * 4 + beat) % melodyNotes.length;
         const melodyTime = startBeat + bar * 4 + beat;
         t.schedule(() => {
           if (running) {
-            leadSynth.trigger(melodyNotes[noteIndex], 1.5, t.getTime(), 0.25);
+            leadSynth.trigger(melodyNotes[noteIndex], 0.6, t.getTime(), 0.3);
           }
         }, melodyTime - t.getBeat());
       }
       
-      // Bell sounds on beat 1 of every other bar
+      // Space effects (every 2 bars)
       if (bar % 2 === 0) {
-        const bellTime = startBeat + bar * 4;
+        const spaceTime = startBeat + bar * 4 + 2;
         t.schedule(() => {
           if (running) {
-            bellSynth.trigger(note('C6'), 2.0, t.getTime(), 0.15);
+            spaceSynth.trigger(note('C6'), 1.0, t.getTime(), 0.2);
           }
-        }, bellTime - t.getBeat());
+        }, spaceTime - t.getBeat());
       }
     }
     
