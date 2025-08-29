@@ -10,7 +10,11 @@ declare global {
             username?: string;
             photo_url?: string;
           };
+          start_param?: string;
         };
+        initData?: string;
+        version?: string;
+        platform?: string;
         colorScheme: string;
         expand: () => void;
         ready: () => void;

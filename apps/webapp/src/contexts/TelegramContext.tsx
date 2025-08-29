@@ -42,6 +42,9 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
       
       console.log('Telegram WebApp found:', tg);
       console.log('initDataUnsafe:', tg.initDataUnsafe);
+      console.log('initData:', tg.initData);
+      console.log('version:', tg.version);
+      console.log('platform:', tg.platform);
       
       // Set up theme
       setTheme(tg.colorScheme as 'light' | 'dark');
@@ -51,26 +54,60 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
 
       // Get user info
       if (tg.initDataUnsafe?.user) {
-        console.log('Setting real user:', tg.initDataUnsafe.user);
+        console.log('Setting real user from initDataUnsafe:', tg.initDataUnsafe.user);
         setUser(tg.initDataUnsafe.user);
+      } else if (tg.initDataUnsafe?.start_param) {
+        // Try to get user from start parameter
+        console.log('Trying to get user from start_param:', tg.initDataUnsafe.start_param);
+        try {
+          const startParam = JSON.parse(tg.initDataUnsafe.start_param);
+          if (startParam.user) {
+            console.log('Found user in start_param:', startParam.user);
+            setUser(startParam.user);
+          } else {
+            throw new Error('No user in start_param');
+          }
+        } catch (error) {
+          console.log('Error parsing start_param:', error);
+          // Continue to next method
+        }
       } else if (tg.initData) {
         // Try to parse initData manually
         console.log('initData available, trying to parse...');
+        console.log('Raw initData:', tg.initData);
         try {
           const urlParams = new URLSearchParams(tg.initData);
+          console.log('URL params:', Object.fromEntries(urlParams.entries()));
+          
           const userStr = urlParams.get('user');
           if (userStr) {
             const user = JSON.parse(decodeURIComponent(userStr));
             console.log('Parsed user from initData:', user);
             setUser(user);
           } else {
-            console.log('No user in initData');
-            setUser({
-              id: 123456789,
-              first_name: 'Test',
-              last_name: 'User',
-              username: 'testuser'
-            });
+            console.log('No user in initData, checking for other user data...');
+            // Try alternative ways to get user data
+            const queryId = urlParams.get('query_id');
+            const authDate = urlParams.get('auth_date');
+            console.log('query_id:', queryId, 'auth_date:', authDate);
+            
+            // If we have some Telegram data but no user, it might be a bot without user info
+            if (queryId || authDate) {
+              console.log('Telegram data found but no user - this might be normal for some bots');
+              setUser({
+                id: 123456789,
+                first_name: 'Telegram',
+                last_name: 'User',
+                username: 'telegram_user'
+              });
+            } else {
+              setUser({
+                id: 123456789,
+                first_name: 'Test',
+                last_name: 'User',
+                username: 'testuser'
+              });
+            }
           }
         } catch (error) {
           console.log('Error parsing initData:', error);
