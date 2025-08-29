@@ -24,7 +24,9 @@ class FlappyScene extends Phaser.Scene {
     // Create bird (simple circle)
     this.bird = this.add.graphics();
     this.bird.fillStyle(0xff6b6b, 1);
-    this.bird.fillCircle(0, 0, 15);
+    this.bird.fillCircle(0, 0, 20); // Увеличили размер
+    this.bird.lineStyle(3, 0xff0000, 1); // Добавили обводку
+    this.bird.strokeCircle(0, 0, 20);
     this.bird.x = this.cameras.main.width * 0.2; // 20% от ширины экрана
     this.bird.y = this.cameras.main.height * 0.5; // центр экрана
     
@@ -130,7 +132,6 @@ class FlappyScene extends Phaser.Scene {
           this.score++;
           this.scoreText.setText(`Score: ${this.score}`);
           scored = true;
-          scoreTrigger.destroy();
         }
       },
       loop: true
@@ -142,7 +143,7 @@ class FlappyScene extends Phaser.Scene {
 
     const birdX = this.bird.x;
     const birdY = this.bird.y;
-    const birdRadius = 15;
+    const birdRadius = 20; // Обновили радиус под новый размер
     
     this.pipes.getChildren().forEach((pipe: any) => {
       if (pipe.active) {
@@ -209,10 +210,16 @@ class FlappyScene extends Phaser.Scene {
     // Reset game state
     this.gameOver = false;
     this.score = 0;
-    this.scoreText.setText('Score: 0');
     
     // Clear all pipes
     this.pipes.clear(true, true);
+    
+    // Clear all game objects except bird and score text
+    this.children.each((child: any) => {
+      if (child !== this.bird && child !== this.scoreText && child.type !== 'Text') {
+        child.destroy();
+      }
+    });
     
     // Reset bird position
     this.bird.x = this.cameras.main.width * 0.2;
@@ -223,28 +230,11 @@ class FlappyScene extends Phaser.Scene {
     // Resume physics
     this.physics.resume();
     
-    // Clear all text objects
-    this.children.removeAll(true);
+    // Update score text
+    this.scoreText.setText('Score: 0');
     
-    // Recreate score text
-    this.scoreText = this.add.text(20, 20, 'Score: 0', {
-      fontSize: '32px',
-      color: '#fff',
-      stroke: '#000',
-      strokeThickness: 4
-    });
-    
-    // Recreate bird
-    this.bird = this.add.graphics();
-    this.bird.fillStyle(0xff6b6b, 1);
-    this.bird.fillCircle(0, 0, 15);
-    this.bird.x = this.cameras.main.width * 0.2;
-    this.bird.y = this.cameras.main.height * 0.5;
-    
-    this.physics.add.existing(this.bird);
-    const newBirdBody = this.bird.body as Phaser.Physics.Arcade.Body;
-    newBirdBody.setCollideWorldBounds(true);
-    newBirdBody.setBounce(0.1);
+    // Make bird visible again
+    this.bird.setVisible(true);
   }
 
   update() {
