@@ -23,17 +23,30 @@ class ApiService {
 
   async authTelegram(tgId: string, name?: string, avatar?: string) {
     this.setTgId(tgId);
-    const response = await fetch(`${API_BASE}/auth/telegram`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ tg_id: tgId, name, avatar }),
-    });
+    console.log('Making auth request to:', `${API_BASE}/auth/telegram`);
     
-    if (!response.ok) {
-      throw new Error('Auth failed');
+    try {
+      const response = await fetch(`${API_BASE}/auth/telegram`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ tg_id: tgId, name, avatar }),
+      });
+      
+      console.log('Auth response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Auth failed:', errorText);
+        throw new Error(`Auth failed: ${response.status} ${errorText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Auth successful:', result);
+      return result;
+    } catch (error) {
+      console.error('Auth request failed:', error);
+      throw error;
     }
-    
-    return response.json();
   }
 
   async getWallet(): Promise<Wallet> {
