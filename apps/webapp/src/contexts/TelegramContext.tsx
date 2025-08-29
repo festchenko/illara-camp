@@ -186,27 +186,37 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
         return;
       }
       
-      // Check if we're testing with URL parameters
-      const testUrlParams = new URLSearchParams(window.location.search);
-      const testUser = testUrlParams.get('test_user');
-      
-      if (testUser === 'true') {
-        console.log('Using test user for development');
-        setUser({
-          id: 123456789,
-          first_name: 'Test',
-          last_name: 'User',
-          username: 'testuser'
-        });
-      } else {
-        console.log('No Telegram WebApp and no test mode, using fallback user');
-        setUser({
-          id: 999999999,
-          first_name: 'Telegram',
-          last_name: 'User',
-          username: 'telegram_user'
-        });
-      }
+          // Check if we're testing with URL parameters
+    const testUrlParams = new URLSearchParams(window.location.search);
+    const testUser = testUrlParams.get('test_user');
+    const realUserId = testUrlParams.get('user_id');
+    const realUserName = testUrlParams.get('user_name');
+
+    if (realUserId && realUserName) {
+      console.log('Using real user data from URL parameters');
+      setUser({
+        id: parseInt(realUserId),
+        first_name: realUserName,
+        last_name: '',
+        username: realUserName.toLowerCase().replace(/\s+/g, '_')
+      });
+    } else if (testUser === 'true') {
+      console.log('Using test user for development');
+      setUser({
+        id: 123456789,
+        first_name: 'Test',
+        last_name: 'User',
+        username: 'testuser'
+      });
+    } else {
+      console.log('No Telegram WebApp and no test mode, using fallback user');
+      setUser({
+        id: 999999999,
+        first_name: 'Telegram',
+        last_name: 'User',
+        username: 'telegram_user'
+      });
+    }
     }
   }, []);
 
