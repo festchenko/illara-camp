@@ -96,6 +96,7 @@ export function createHappyPattern(ctx: AudioContext, t: Transport, out: GainNod
   
   return {
     stop: () => {
+      console.log('Stopping happy pattern');
       running = false;
     }
   };
@@ -172,6 +173,7 @@ export function createCosmicPattern(ctx: AudioContext, t: Transport, out: GainNo
   
   return {
     stop: () => {
+      console.log('Stopping cosmic pattern');
       running = false;
     }
   };
@@ -248,6 +250,7 @@ export function createChillPattern(ctx: AudioContext, t: Transport, out: GainNod
   
   return {
     stop: () => {
+      console.log('Stopping chill pattern');
       running = false;
     }
   };

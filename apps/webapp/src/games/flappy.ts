@@ -75,53 +75,32 @@ class FlappyScene extends Phaser.Scene {
       );
     }
 
-    // Create beautiful rocket texture from our asset
-    try {
-      const rocketComponent = React.createElement(Rocket, { size: 48 });
-      const rocketSVG = this.componentToSVGString(rocketComponent);
-      console.log('Rocket SVG created:', rocketSVG.substring(0, 100) + '...');
-      this.createTextureFromSVG('rocket', rocketSVG);
-    } catch (error) {
-      console.error('Failed to create rocket texture:', error);
-      // Fallback to simple rocket
-      const fallbackRocketSVG = `
-        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="24" cy="24" rx="12" ry="16" fill="#FF6B6B" stroke="#C0392B" stroke-width="2"/>
-          <circle cx="24" cy="20" r="4" fill="#87CEEB" stroke="#5DADE2" stroke-width="1"/>
-          <polygon points="12,32 8,40 16,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
-          <polygon points="36,32 40,40 32,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
-          <polygon points="24,40 20,48 24,44 28,48" fill="#FFD166"/>
-        </svg>
-      `;
-      this.createTextureFromSVG('rocket', fallbackRocketSVG);
-    }
+    // Create simple rocket texture (fallback)
+    const rocketSVG = `
+      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="24" cy="24" rx="12" ry="16" fill="#FF6B6B" stroke="#C0392B" stroke-width="2"/>
+        <circle cx="24" cy="20" r="4" fill="#87CEEB" stroke="#5DADE2" stroke-width="1"/>
+        <polygon points="12,32 8,40 16,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
+        <polygon points="36,32 40,40 32,40" fill="#E74C3C" stroke="#C0392B" stroke-width="1"/>
+        <polygon points="24,40 20,48 24,44 28,48" fill="#FFD166"/>
+      </svg>
+    `;
+    this.createTextureFromSVG('rocket', rocketSVG);
 
-    // Create pipe textures from our assets
-    try {
-      const pipeBodyComponent = React.createElement(PipeBody, { width: 72, height: 300 });
-      const pipeBodySVG = this.componentToSVGString(pipeBodyComponent);
-      this.createTextureFromSVG('pipeBody', pipeBodySVG);
-
-      const pipeCapComponent = React.createElement(PipeCap, { width: 88, height: 28 });
-      const pipeCapSVG = this.componentToSVGString(pipeCapComponent);
-      this.createTextureFromSVG('pipeCap', pipeCapSVG);
-    } catch (error) {
-      console.error('Failed to create pipe textures:', error);
-      // Fallback to simple pipes
-      const fallbackPipeSVG = `
-        <svg width="72" height="300" viewBox="0 0 72 300" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="0" width="68" height="300" fill="#2EC4B6" stroke="#1B4965" stroke-width="2" rx="4"/>
-        </svg>
-      `;
-      this.createTextureFromSVG('pipeBody', fallbackPipeSVG);
-      
-      const fallbackCapSVG = `
-        <svg width="88" height="28" viewBox="0 0 88 28" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="88" height="28" fill="#1B4965" stroke="#1B4965" stroke-width="2" rx="8"/>
-        </svg>
-      `;
-      this.createTextureFromSVG('pipeCap', fallbackCapSVG);
-    }
+    // Create simple pipe textures (fallback)
+    const pipeBodySVG = `
+      <svg width="72" height="300" viewBox="0 0 72 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="68" height="300" fill="#2EC4B6" stroke="#1B4965" stroke-width="2" rx="4"/>
+      </svg>
+    `;
+    this.createTextureFromSVG('pipeBody', pipeBodySVG);
+    
+    const pipeCapSVG = `
+      <svg width="88" height="28" viewBox="0 0 88 28" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="88" height="28" fill="#1B4965" stroke="#1B4965" stroke-width="2" rx="8"/>
+      </svg>
+    `;
+    this.createTextureFromSVG('pipeCap', pipeCapSVG);
 
     // Create bird using rocket texture
     this.bird = this.add.image(
@@ -246,57 +225,19 @@ class FlappyScene extends Phaser.Scene {
     const pipeWidth = 72;
     const pipeX = this.cameras.main.width + 50;
     
-    // Top pipe body
-    let topPipeBody: Phaser.GameObjects.Image;
-    try {
-      topPipeBody = this.add.image(pipeX, gapY / 2, 'pipeBody');
-      topPipeBody.setDisplaySize(pipeWidth, gapY);
-      topPipeBody.setOrigin(0.5, 0.5);
-    } catch (error) {
-      console.error('Failed to create top pipe body, using rectangle:', error);
-      const rect = this.add.rectangle(pipeX, gapY / 2, pipeWidth, gapY, 0x2EC4B6);
-      rect.setStrokeStyle(3, 0x1B4965);
-      topPipeBody = rect as any;
-    }
+    // Create simple pipes using rectangles
+    const topPipeBody = this.add.rectangle(pipeX, gapY / 2, pipeWidth, gapY, 0x2EC4B6);
+    topPipeBody.setStrokeStyle(3, 0x1B4965);
     this.pipes.add(topPipeBody);
     
-    // Top pipe cap
-    let topPipeCap: Phaser.GameObjects.Image;
-    try {
-      topPipeCap = this.add.image(pipeX, gapY, 'pipeCap');
-      topPipeCap.setDisplaySize(88, 28);
-      topPipeCap.setOrigin(0.5, 0);
-    } catch (error) {
-      console.error('Failed to create top pipe cap, using rectangle:', error);
-      topPipeCap = this.add.rectangle(pipeX, gapY, 88, 28, 0x1B4965) as any;
-    }
+    const topPipeCap = this.add.rectangle(pipeX, gapY, 88, 28, 0x1B4965);
     this.pipes.add(topPipeCap);
 
-    // Bottom pipe body
-    let bottomPipeBody: Phaser.GameObjects.Image;
-    try {
-      bottomPipeBody = this.add.image(pipeX, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, 'pipeBody');
-      bottomPipeBody.setDisplaySize(pipeWidth, this.cameras.main.height - gapY - gap);
-      bottomPipeBody.setOrigin(0.5, 0.5);
-    } catch (error) {
-      console.error('Failed to create bottom pipe body, using rectangle:', error);
-      const rect = this.add.rectangle(pipeX, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, pipeWidth, this.cameras.main.height - gapY - gap, 0x2EC4B6);
-      rect.setStrokeStyle(3, 0x1B4965);
-      bottomPipeBody = rect as any;
-    }
+    const bottomPipeBody = this.add.rectangle(pipeX, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, pipeWidth, this.cameras.main.height - gapY - gap, 0x2EC4B6);
+    bottomPipeBody.setStrokeStyle(3, 0x1B4965);
     this.pipes.add(bottomPipeBody);
     
-    // Bottom pipe cap
-    let bottomPipeCap: Phaser.GameObjects.Image;
-    try {
-      bottomPipeCap = this.add.image(pipeX, gapY + gap, 'pipeCap');
-      bottomPipeCap.setDisplaySize(88, 28);
-      bottomPipeCap.setOrigin(0.5, 1);
-      bottomPipeCap.setFlipY(true);
-    } catch (error) {
-      console.error('Failed to create bottom pipe cap, using rectangle:', error);
-      bottomPipeCap = this.add.rectangle(pipeX, gapY + gap, 88, 28, 0x1B4965) as any;
-    }
+    const bottomPipeCap = this.add.rectangle(pipeX, gapY + gap, 88, 28, 0x1B4965);
     this.pipes.add(bottomPipeCap);
 
     // Move pipes with tween
@@ -367,11 +308,11 @@ class FlappyScene extends Phaser.Scene {
     const birdRadius = 20; // Updated radius for new size
     
     this.pipes.getChildren().forEach((pipe: any) => {
-      if (pipe.active && pipe.texture && pipe.texture.key === 'pipeBody') {
+      if (pipe.active && pipe.width) { // Check if it's a rectangle
         const pipeX = pipe.x;
         const pipeY = pipe.y;
-        const pipeWidth = pipe.displayWidth || 72;
-        const pipeHeight = pipe.displayHeight || 300;
+        const pipeWidth = pipe.width || 72;
+        const pipeHeight = pipe.height || 300;
         
         // Check collision between bird circle and pipe rectangle
         const closestX = Math.max(pipeX - pipeWidth/2, Math.min(birdX, pipeX + pipeWidth/2));
@@ -381,6 +322,7 @@ class FlappyScene extends Phaser.Scene {
         const distanceY = birdY - closestY;
         
         if ((distanceX * distanceX + distanceY * distanceY) < (birdRadius * birdRadius)) {
+          console.log('Collision detected! Game Over.');
           this.gameOverHandler();
         }
       }
