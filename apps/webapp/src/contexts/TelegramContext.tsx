@@ -36,6 +36,10 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
+    console.log('=== Telegram WebApp Initialization ===');
+    console.log('window.Telegram:', window.Telegram);
+    console.log('window.Telegram?.WebApp:', window.Telegram?.WebApp);
+    
     // Initialize Telegram WebApp
     if (window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
