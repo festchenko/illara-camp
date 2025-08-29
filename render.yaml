@@ -13,4 +13,11 @@ services:
       - key: NODE_VERSION
         value: 20
       - key: DATABASE_URL
-        value: "file:./prod.db"
+        fromDatabase:
+          name: illara-db
+          property: connectionString
+
+databases:
+  - name: illara-db
+    plan: free
+    region: frankfurt
