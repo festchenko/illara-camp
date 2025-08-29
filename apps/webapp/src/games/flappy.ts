@@ -59,8 +59,13 @@ class FlappyScene extends Phaser.Scene {
       loop: true
     });
 
-    // Collision detection
-    this.physics.add.collider(this.bird, this.pipes, this.gameOverHandler, undefined, this);
+    // Collision detection - check manually since pipes don't have physics
+    this.time.addEvent({
+      delay: 16, // 60 FPS
+      callback: this.checkCollisions,
+      callbackScope: this,
+      loop: true
+    });
   }
 
   private flap() {
@@ -75,26 +80,12 @@ class FlappyScene extends Phaser.Scene {
     const gap = 150;
     const gapY = Phaser.Math.Between(100, 500);
     
-    // Top pipe
-    const topPipe = this.add.graphics();
-    topPipe.fillStyle(0x4ecdc4, 1);
-    topPipe.fillRect(0, 0, 50, gapY);
-    topPipe.x = 800;
-    topPipe.y = 0;
-    this.physics.add.existing(topPipe);
-    const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body;
-    topPipeBody.setImmovable(true);
+    // Top pipe - create as simple rectangle without physics
+    const topPipe = this.add.rectangle(800, gapY / 2, 50, gapY, 0x4ecdc4);
     this.pipes.add(topPipe);
 
-    // Bottom pipe
-    const bottomPipe = this.add.graphics();
-    bottomPipe.fillStyle(0x4ecdc4, 1);
-    bottomPipe.fillRect(0, 0, 50, 600 - gapY - gap);
-    bottomPipe.x = 800;
-    bottomPipe.y = gapY + gap;
-    this.physics.add.existing(bottomPipe);
-    const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body;
-    bottomPipeBody.setImmovable(true);
+    // Bottom pipe - create as simple rectangle without physics
+    const bottomPipe = this.add.rectangle(800, gapY + gap + (600 - gapY - gap) / 2, 50, 600 - gapY - gap, 0x4ecdc4);
     this.pipes.add(bottomPipe);
 
     // Move pipes with tween
@@ -136,6 +127,34 @@ class FlappyScene extends Phaser.Scene {
       this.scoreText.setText(`Score: ${this.score}`);
       scoreTrigger.destroy();
     }, undefined, this);
+  }
+
+  private checkCollisions() {
+    if (this.gameOver) return;
+
+    const birdX = this.bird.x;
+    const birdY = this.bird.y;
+    const birdRadius = 15;
+    
+    this.pipes.getChildren().forEach((pipe: any) => {
+      if (pipe.active) {
+        const pipeX = pipe.x;
+        const pipeY = pipe.y;
+        const pipeWidth = pipe.width || 50;
+        const pipeHeight = pipe.height || 50;
+        
+        // Check collision between bird circle and pipe rectangle
+        const closestX = Math.max(pipeX - pipeWidth/2, Math.min(birdX, pipeX + pipeWidth/2));
+        const closestY = Math.max(pipeY - pipeHeight/2, Math.min(birdY, pipeY + pipeHeight/2));
+        
+        const distanceX = birdX - closestX;
+        const distanceY = birdY - closestY;
+        
+        if ((distanceX * distanceX + distanceY * distanceY) < (birdRadius * birdRadius)) {
+          this.gameOverHandler();
+        }
+      }
+    });
   }
 
   private gameOverHandler() {
