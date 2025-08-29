@@ -22,7 +22,9 @@ const AppContent: React.FC = () => {
         user.id.toString(),
         `${user.first_name} ${user.last_name || ''}`.trim(),
         user.photo_url
-      ).catch(error => {
+      ).then(() => {
+        console.log('Auth successful');
+      }).catch(error => {
         console.error('Auth failed:', error);
       });
     }
