@@ -204,7 +204,7 @@ export const flappyGame: Game = {
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 0 },
+          gravity: { x: 0, y: 0 },
           debug: false
         }
       },
@@ -224,7 +224,7 @@ export const flappyGame: Game = {
     (container as any).phaserGame = game;
   },
   
-  unmount() {
+  unmount(container: HTMLElement) {
     const game = (container as any).phaserGame;
     if (game) {
       game.destroy(true);
