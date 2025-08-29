@@ -25,8 +25,8 @@ class FlappyScene extends Phaser.Scene {
     this.bird = this.add.graphics();
     this.bird.fillStyle(0xff6b6b, 1);
     this.bird.fillCircle(0, 0, 15);
-    this.bird.x = 100;
-    this.bird.y = 300;
+    this.bird.x = this.cameras.main.width * 0.2; // 20% от ширины экрана
+    this.bird.y = this.cameras.main.height * 0.5; // центр экрана
     
     this.physics.add.existing(this.bird);
     const birdBody = this.bird.body as Phaser.Physics.Arcade.Body;
@@ -37,7 +37,7 @@ class FlappyScene extends Phaser.Scene {
     this.pipes = this.add.group();
 
     // Score text
-    this.scoreText = this.add.text(16, 16, 'Score: 0', {
+    this.scoreText = this.add.text(20, 20, 'Score: 0', {
       fontSize: '32px',
       color: '#fff',
       stroke: '#000',
@@ -78,14 +78,14 @@ class FlappyScene extends Phaser.Scene {
     if (this.gameOver) return;
 
     const gap = 150;
-    const gapY = Phaser.Math.Between(100, 500);
+    const gapY = Phaser.Math.Between(100, this.cameras.main.height - 200);
     
     // Top pipe - create as simple rectangle without physics
-    const topPipe = this.add.rectangle(800, gapY / 2, 50, gapY, 0x4ecdc4);
+    const topPipe = this.add.rectangle(this.cameras.main.width + 50, gapY / 2, 50, gapY, 0x4ecdc4);
     this.pipes.add(topPipe);
 
     // Bottom pipe - create as simple rectangle without physics
-    const bottomPipe = this.add.rectangle(800, gapY + gap + (600 - gapY - gap) / 2, 50, 600 - gapY - gap, 0x4ecdc4);
+    const bottomPipe = this.add.rectangle(this.cameras.main.width + 50, gapY + gap + (this.cameras.main.height - gapY - gap) / 2, 50, this.cameras.main.height - gapY - gap, 0x4ecdc4);
     this.pipes.add(bottomPipe);
 
     // Move pipes with tween
@@ -104,7 +104,7 @@ class FlappyScene extends Phaser.Scene {
     const scoreTrigger = this.add.graphics();
     scoreTrigger.fillStyle(0xffffff, 0);
     scoreTrigger.fillRect(0, 0, 1, gap);
-    scoreTrigger.x = 800;
+    scoreTrigger.x = this.cameras.main.width + 50;
     scoreTrigger.y = gapY;
     this.physics.add.existing(scoreTrigger);
     const scoreTriggerBody = scoreTrigger.body as Phaser.Physics.Arcade.Body;
@@ -172,7 +172,7 @@ class FlappyScene extends Phaser.Scene {
     this.physics.pause();
     
     // Show game over text
-    this.add.text(400, 250, 'Game Over!', {
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.4, 'Game Over!', {
       fontSize: '48px',
       color: '#fff',
       stroke: '#000',
@@ -180,7 +180,7 @@ class FlappyScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Show final score
-    this.add.text(400, 320, `Final Score: ${this.score}`, {
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.5, `Final Score: ${this.score}`, {
       fontSize: '32px',
       color: '#fff',
       stroke: '#000',
@@ -188,7 +188,7 @@ class FlappyScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Add restart button
-    const restartButton = this.add.text(400, 400, 'Play Again', {
+    const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.6, 'Play Again', {
       fontSize: '24px',
       color: '#fff',
       backgroundColor: '#8b5cf6',
@@ -215,8 +215,8 @@ class FlappyScene extends Phaser.Scene {
     this.pipes.clear(true, true);
     
     // Reset bird position
-    this.bird.x = 100;
-    this.bird.y = 300;
+    this.bird.x = this.cameras.main.width * 0.2;
+    this.bird.y = this.cameras.main.height * 0.5;
     const birdBody = this.bird.body as Phaser.Physics.Arcade.Body;
     birdBody.setVelocity(0, 0);
     
@@ -227,7 +227,7 @@ class FlappyScene extends Phaser.Scene {
     this.children.removeAll(true);
     
     // Recreate score text
-    this.scoreText = this.add.text(16, 16, 'Score: 0', {
+    this.scoreText = this.add.text(20, 20, 'Score: 0', {
       fontSize: '32px',
       color: '#fff',
       stroke: '#000',
@@ -238,8 +238,8 @@ class FlappyScene extends Phaser.Scene {
     this.bird = this.add.graphics();
     this.bird.fillStyle(0xff6b6b, 1);
     this.bird.fillCircle(0, 0, 15);
-    this.bird.x = 100;
-    this.bird.y = 300;
+    this.bird.x = this.cameras.main.width * 0.2;
+    this.bird.y = this.cameras.main.height * 0.5;
     
     this.physics.add.existing(this.bird);
     const newBirdBody = this.bird.body as Phaser.Physics.Arcade.Body;
@@ -268,8 +268,8 @@ export const flappyGame: Game = {
   mount(container: HTMLElement, onResult: (score: number) => void) {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 800,
-      height: 600,
+      width: window.innerWidth,
+      height: window.innerHeight,
       parent: container,
       physics: {
         default: 'arcade',
@@ -280,7 +280,7 @@ export const flappyGame: Game = {
       },
       scene: FlappyScene,
       scale: {
-        mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH
       }
     };
