@@ -6,6 +6,7 @@ class FlappyScene extends Phaser.Scene {
   private pipes!: Phaser.GameObjects.Group;
   private scoreText!: Phaser.GameObjects.Text;
   private score: number = 0;
+  private maxScore: number = 0;
   private gameOver: boolean = false;
   private onResult!: (score: number) => void;
 
@@ -131,8 +132,12 @@ class FlappyScene extends Phaser.Scene {
         if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored) {
           this.score++;
           this.scoreText.setText(`Score: ${this.score}`);
-          // Save current score to container for GameHost to access
-          (this.game.config.parent as any).currentScore = this.score;
+          // Update max score
+          if (this.score > this.maxScore) {
+            this.maxScore = this.score;
+          }
+          // Save max score to container for GameHost to access
+          (this.game.config.parent as any).currentScore = this.maxScore;
           scored = true;
         }
       },
@@ -238,6 +243,23 @@ class FlappyScene extends Phaser.Scene {
     
     // Make bird visible again
     this.bird.setVisible(true);
+    
+    // Force clear all remaining game over UI elements
+    this.children.each((child: any) => {
+      if (child.type === 'Text' && 
+          (child.text === 'Game Over!' || 
+           child.text.includes('Final Score:') || 
+           child.text === 'Play Again')) {
+        child.destroy();
+      }
+    });
+    
+    // Additional cleanup - remove all text objects except score text
+    this.children.each((child: any) => {
+      if (child.type === 'Text' && child !== this.scoreText) {
+        child.destroy();
+      }
+    });
   }
 
   update() {
