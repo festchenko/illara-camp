@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Game } from '@illara-camp/shared';
+import { playSfx } from '../audio/engine';
+import { CardIcon, CardIconName } from './memory/assets/CardFace';
 
 interface Card {
   id: number;
@@ -100,12 +102,9 @@ const MemoryGameComponent: React.FC<MemoryGameProps> = ({ onResult }) => {
     }
   }, [matchedPairs, onResult]);
 
-  const getCardColor = (value: number) => {
-    const colors = [
-      '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4',
-      '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'
-    ];
-    return colors[value - 1] || '#666';
+  const getCardIcon = (value: number): CardIconName => {
+    const icons: CardIconName[] = ['tent', 'ball', 'guitar', 'star', 'rocket', 'tree', 'compass', 'swim'];
+    return icons[value - 1] || 'star';
   };
 
   return (

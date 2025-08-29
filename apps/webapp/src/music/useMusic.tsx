@@ -61,7 +61,7 @@ export function MusicToggle() {
 
   const handleToggle = () => {
     if (playing) {
-      stop();
+      stop(true); // Immediate stop
     } else {
       play('happy'); // Default to happy preset
     }
@@ -70,14 +70,14 @@ export function MusicToggle() {
   return (
     <button
       onClick={handleToggle}
-      className={`
-        fixed top-4 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center
-        transition-all duration-200 shadow-pop
-        ${playing 
-          ? 'bg-primary text-white hover:bg-primary/90' 
-          : 'bg-card text-hint hover:bg-card/80 border border-card'
-        }
-      `}
+          className={`
+      fixed top-4 right-4 z-30 w-12 h-12 rounded-full flex items-center justify-center
+      transition-all duration-200 shadow-pop
+      ${playing 
+        ? 'bg-primary text-white hover:bg-primary' 
+        : 'bg-card text-hint hover:bg-card border border-card'
+      }
+    `}
       title={playing ? 'Stop Music' : 'Start Music'}
     >
       <span className="text-lg">

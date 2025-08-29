@@ -70,7 +70,7 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
 
   return (
     <div className="w-full h-full flex flex-col" style={{ height: '100vh' }}>
-      <div className="flex-shrink-0 p-4 bg-black/20" style={{ zIndex: 1000, position: 'relative' }}>
+      <div className="flex-shrink-0 p-4 bg-black/20" style={{ zIndex: 10, position: 'relative' }}>
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => {
@@ -89,11 +89,11 @@ export const GameHost: React.FC<GameHostProps> = ({ game, onExit, onResult }) =>
             }}
             className="btn-secondary text-sm px-3 py-1 hover:bg-secondary active:bg-secondary"
             style={{ 
-              zIndex: 1001, 
+              zIndex: 11, 
               position: 'relative',
-              backgroundColor: '#8b5cf6',
+              backgroundColor: '#2EC4B6',
               color: 'white',
-              border: '2px solid #7c3aed',
+              border: '2px solid #1B4965',
               borderRadius: '8px',
               padding: '8px 16px',
               cursor: 'pointer'

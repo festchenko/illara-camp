@@ -116,19 +116,20 @@ class FlappyScene extends Phaser.Scene {
 
     // Score text
     this.scoreText = this.add.text(20, 10, 'Score: 0', {
-      fontSize: '24px',
-      color: '#fff',
-      stroke: '#000',
-      strokeThickness: 2
+      fontSize: '20px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 3,
+      fontFamily: 'Arial, sans-serif'
     });
 
     // ILL formula text
-    // Add ILL info text
-    this.add.text(20, 40, 'ILL: 1 per 10 points', {
-      fontSize: '16px',
-      color: '#8b5cf6',
-      stroke: '#000',
-      strokeThickness: 1
+    this.add.text(20, 35, 'ILL: 1 per 10 points', {
+      fontSize: '14px',
+      color: '#2EC4B6',
+      stroke: '#000000',
+      strokeThickness: 2,
+      fontFamily: 'Arial, sans-serif'
     });
 
     // Input handling
@@ -292,30 +293,33 @@ class FlappyScene extends Phaser.Scene {
     playSfx('fail'); // Play fail sound
     
     // Show game over text
-    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.3, 'Game Over!', {
-      fontSize: '36px',
-      color: '#fff',
-      stroke: '#000',
-      strokeThickness: 3
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.35, 'Game Over!', {
+      fontSize: '32px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 4,
+      fontFamily: 'Arial, sans-serif'
     }).setOrigin(0.5);
 
     // Show final score
-    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.4, `Final Score: ${this.maxScore}`, {
-      fontSize: '24px',
-      color: '#fff',
-      stroke: '#000',
-      strokeThickness: 2
+    this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.45, `Final Score: ${this.maxScore}`, {
+      fontSize: '20px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 3,
+      fontFamily: 'Arial, sans-serif'
     }).setOrigin(0.5);
     
     // Update container with max score
     (this.game.config.parent as any).currentScore = this.maxScore;
 
     // Add restart button
-    const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.5, 'Play Again', {
-      fontSize: '20px',
-      color: '#fff',
-      backgroundColor: '#8b5cf6',
-      padding: { x: 16, y: 8 }
+    const restartButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height * 0.55, 'Play Again', {
+      fontSize: '18px',
+      color: '#ffffff',
+      backgroundColor: '#2EC4B6',
+      padding: { x: 20, y: 10 },
+      fontFamily: 'Arial, sans-serif'
     }).setOrigin(0.5).setInteractive();
 
     restartButton.on('pointerdown', () => {

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Game } from '@illara-camp/shared';
+import { playSfx } from '../audio/engine';
 
 interface StackBlock {
   mesh: THREE.Mesh;
@@ -32,7 +33,7 @@ class StackGame {
     
     // Set up scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x87CEEB);
+    this.scene.background = new THREE.Color(0x1B4965); // Darker blue background
     
     // Set up camera (orthographic for 2D-like view)
     const aspect = container.clientWidth / container.clientHeight;
@@ -53,13 +54,20 @@ class StackGame {
     directionalLight.position.set(10, 10, 5);
     this.scene.add(directionalLight);
     
-    // Create ground
-    const groundGeometry = new THREE.PlaneGeometry(10, 10);
-    const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x90EE90 });
+    // Create beautiful ground with gradient
+    const groundGeometry = new THREE.PlaneGeometry(20, 20);
+    const groundMaterial = new THREE.MeshLambertMaterial({ 
+      color: 0x2EC4B6,
+      transparent: true,
+      opacity: 0.8
+    });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -2;
     this.scene.add(ground);
+    
+    // Add some decorative elements
+    this.addStars();
     
     // Start game
     this.createFirstBlock();
@@ -72,9 +80,34 @@ class StackGame {
     this.animate();
   }
 
+  private addStars() {
+    // Add decorative stars in the background
+    for (let i = 0; i < 20; i++) {
+      const starGeometry = new THREE.SphereGeometry(0.02, 8, 8);
+      const starMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0xFFFFFF,
+        transparent: true,
+        opacity: Math.random() * 0.8 + 0.2
+      });
+      const star = new THREE.Mesh(starGeometry, starMaterial);
+      
+      star.position.set(
+        (Math.random() - 0.5) * 20,
+        Math.random() * 10 + 2,
+        (Math.random() - 0.5) * 20
+      );
+      
+      this.scene.add(star);
+    }
+  }
+
   private createFirstBlock() {
     const geometry = new THREE.BoxGeometry(2, 0.5, 2);
-    const material = new THREE.MeshLambertMaterial({ color: this.getRandomColor() });
+    const material = new THREE.MeshLambertMaterial({ 
+      color: this.getRandomColor(),
+      transparent: true,
+      opacity: 0.9
+    });
     const mesh = new THREE.Mesh(geometry, material);
     
     this.currentBlock = {
@@ -92,7 +125,11 @@ class StackGame {
 
   private createNextBlock() {
     const geometry = new THREE.BoxGeometry(2, 0.5, 2);
-    const material = new THREE.MeshLambertMaterial({ color: this.getRandomColor() });
+    const material = new THREE.MeshLambertMaterial({ 
+      color: this.getRandomColor(),
+      transparent: true,
+      opacity: 0.9
+    });
     const mesh = new THREE.Mesh(geometry, material);
     
     this.nextBlock = {
@@ -108,7 +145,17 @@ class StackGame {
   }
 
   private getRandomColor(): number {
-    const colors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0x96ceb4, 0xfeca57, 0xff9ff3];
+    // Kid-friendly color palette from our design system
+    const colors = [
+      0x2EC4B6, // primary teal
+      0xFFD166, // secondary yellow
+      0xEF476F, // accent raspberry
+      0x118AB2, // info sky blue
+      0x06D6A0, // success green
+      0xFFB703, // warning amber
+      0x6C5CE7, // galaxy purple
+      0x5FA8D3, // space blue
+    ];
     return colors[Math.floor(Math.random() * colors.length)];
   }
 
@@ -135,6 +182,7 @@ class StackGame {
     if (overlap >= this.currentBlock.width) {
       // Game over - no overlap
       this.gameOver = true;
+      playSfx('fail'); // Play fail sound
       setTimeout(() => this.onResult(this.score), 2000);
       return;
     }
@@ -164,6 +212,7 @@ class StackGame {
     
     // Update score
     this.score++;
+    playSfx('stack'); // Play stack sound
     
     // Prepare next block
     this.currentBlock = this.nextBlock;
