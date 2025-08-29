@@ -32,7 +32,11 @@ export function useMusic() {
 
   const stop = useCallback((immediate: boolean = false) => {
     try {
-      stopMusic(immediate);
+      if (typeof stopMusic === 'function') {
+        stopMusic(immediate);
+      } else {
+        console.error('stopMusic is not a function');
+      }
     } catch (error) {
       console.error('Error stopping music:', error);
     }
@@ -70,10 +74,14 @@ export function MusicToggle() {
 
   const handleToggle = () => {
     try {
-      if (playing && typeof stop === 'function') {
+      if (playing && stop && typeof stop === 'function') {
+        console.log('Stopping music...');
         stop(true); // Immediate stop
-      } else if (typeof play === 'function') {
+      } else if (play && typeof play === 'function') {
+        console.log('Starting music...');
         play('happy'); // Default to happy preset
+      } else {
+        console.error('Music functions not available:', { stop: typeof stop, play: typeof play });
       }
     } catch (error) {
       console.error('Error toggling music:', error);

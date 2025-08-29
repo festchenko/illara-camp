@@ -76,7 +76,18 @@ export async function startPreset(name: MusicPresetName): Promise<void> {
   
   // Create pattern
   const pattern = PATTERNS[name];
+  if (!pattern) {
+    console.error(`Pattern not found for preset: ${name}`);
+    return;
+  }
+  
   const stopFn = pattern(engine.ctx, engine.transport, engine.musicGain);
+  
+  // Verify stopFn is a function
+  if (typeof stopFn !== 'function') {
+    console.error('Pattern did not return a valid stop function');
+    return;
+  }
   
   // Fade in new preset
   engine.musicGain.gain.setValueAtTime(0, startTime);
@@ -93,7 +104,9 @@ export function stopMusic(immediate: boolean = false): void {
   if (immediate) {
     // Quick stop
     engine.musicGain.gain.setValueAtTime(0, engine.ctx.currentTime);
-    engine.current.stop();
+    if (typeof engine.current.stop === 'function') {
+      engine.current.stop();
+    }
     engine.current = undefined;
     engine.transport.stop();
   } else {
@@ -103,7 +116,9 @@ export function stopMusic(immediate: boolean = false): void {
     engine.musicGain.gain.linearRampToValueAtTime(0, engine.ctx.currentTime + 0.6);
     
     setTimeout(() => {
-      engine.current?.stop();
+      if (engine.current && typeof engine.current.stop === 'function') {
+        engine.current.stop();
+      }
       engine.current = undefined;
       engine.transport.stop();
     }, 600);
