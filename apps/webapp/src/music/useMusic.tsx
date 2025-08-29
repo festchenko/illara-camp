@@ -23,11 +23,19 @@ export function useMusic() {
   }, []);
 
   const play = useCallback((name: MusicPresetName) => {
-    startPreset(name);
+    try {
+      startPreset(name);
+    } catch (error) {
+      console.error('Error starting music:', error);
+    }
   }, []);
 
   const stop = useCallback((immediate: boolean = false) => {
-    stopMusic(immediate);
+    try {
+      stopMusic(immediate);
+    } catch (error) {
+      console.error('Error stopping music:', error);
+    }
   }, []);
 
   const setVolume = useCallback((v: number) => {
@@ -57,27 +65,32 @@ export function useMusic() {
 
 // Music toggle button component
 export function MusicToggle() {
-  const { play, stop, playing, currentPreset } = useMusic();
+  const musicHook = useMusic();
+  const { play, stop, playing, currentPreset } = musicHook;
 
   const handleToggle = () => {
-    if (playing) {
-      stop(true); // Immediate stop
-    } else {
-      play('happy'); // Default to happy preset
+    try {
+      if (playing && typeof stop === 'function') {
+        stop(true); // Immediate stop
+      } else if (typeof play === 'function') {
+        play('happy'); // Default to happy preset
+      }
+    } catch (error) {
+      console.error('Error toggling music:', error);
     }
   };
 
   return (
     <button
       onClick={handleToggle}
-          className={`
-      fixed top-4 right-4 z-30 w-12 h-12 rounded-full flex items-center justify-center
-      transition-all duration-200 shadow-pop
-      ${playing 
-        ? 'bg-primary text-white hover:bg-primary' 
-        : 'bg-card text-hint hover:bg-card border border-card'
-      }
-    `}
+      className={`
+        fixed bottom-4 right-4 z-30 w-12 h-12 rounded-full flex items-center justify-center
+        transition-all duration-200 shadow-pop
+        ${playing 
+          ? 'bg-primary text-white hover:bg-primary' 
+          : 'bg-card text-hint hover:bg-card border border-card'
+        }
+      `}
       title={playing ? 'Stop Music' : 'Start Music'}
     >
       <span className="text-lg">
