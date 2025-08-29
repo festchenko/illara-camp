@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  tg_id     String   @unique
+  name      String?
+  avatar    String?
+  created_at DateTime @default(now())
+  wallet    Wallet?
+  transactions Tx[]
+  rewards   Reward[]
+  scores    Score[]
+}
+
+model Wallet {
+  user_id Int    @unique
+  balance Int    @default(0)
+  user    User   @relation(fields: [user_id], references: [id])
+}
+
+model Tx {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  amount   Int
+  type     String
+  meta     String?
+  ts       DateTime @default(now())
+  user     User     @relation(fields: [user_id], references: [id])
+}
+
+model Reward {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  type     String
+  code     String   @unique
+  status   String   @default("active")
+  ts       DateTime @default(now())
+  user     User     @relation(fields: [user_id], references: [id])
+}
+
+model Score {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  game_id  String
+  score    Int
+  ts       DateTime @default(now())
+  user     User     @relation(fields: [user_id], references: [id])
+}

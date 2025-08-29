@@ -1,0 +1,15 @@
+This project includes code inspired by the following MIT-licensed repositories:
+
+1. Flappy Bird (Phaser 3): https://github.com/usmansbk/flappy-bird
+   - Used for game logic structure and Phaser 3 implementation patterns
+   - All assets and sprites have been replaced with our own placeholders
+
+2. Stack (Three.js): https://github.com/KonradLinkowski/Stack
+   - Used for Three.js game logic and stacking mechanics
+   - Simplified implementation with our own placeholder graphics
+
+3. Memory Game (Vanilla JS): https://github.com/taniarascia/memory
+   - Used for memory matching game logic and card flip mechanics
+   - Adapted to our React/TypeScript architecture
+
+All original code has been rewritten and adapted for our specific use case.

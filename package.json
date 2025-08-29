@@ -1,0 +1,21 @@
+{
+  "name": "illara-camp",
+  "version": "1.0.0",
+  "description": "Telegram Mini App with three simple games",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -C apps/api dev & pnpm -C apps/webapp dev",
+    "build": "pnpm -C apps/webapp build",
+    "install:all": "pnpm install",
+    "clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
+
