@@ -121,12 +121,20 @@ class FlappyScene extends Phaser.Scene {
       }
     });
 
-    // Check if bird passes the trigger
-    this.physics.add.overlap(this.bird, scoreTrigger, () => {
-      this.score++;
-      this.scoreText.setText(`Score: ${this.score}`);
-      scoreTrigger.destroy();
-    }, undefined, this);
+    // Check if bird passes the trigger - manual check
+    let scored = false;
+    this.time.addEvent({
+      delay: 16,
+      callback: () => {
+        if (scoreTrigger.active && this.bird.x > scoreTrigger.x && !scored) {
+          this.score++;
+          this.scoreText.setText(`Score: ${this.score}`);
+          scored = true;
+          scoreTrigger.destroy();
+        }
+      },
+      loop: true
+    });
   }
 
   private checkCollisions() {
@@ -164,17 +172,79 @@ class FlappyScene extends Phaser.Scene {
     this.physics.pause();
     
     // Show game over text
-    this.add.text(400, 300, 'Game Over!', {
+    this.add.text(400, 250, 'Game Over!', {
       fontSize: '48px',
       color: '#fff',
       stroke: '#000',
       strokeThickness: 4
     }).setOrigin(0.5);
 
+    // Show final score
+    this.add.text(400, 320, `Final Score: ${this.score}`, {
+      fontSize: '32px',
+      color: '#fff',
+      stroke: '#000',
+      strokeThickness: 4
+    }).setOrigin(0.5);
+
+    // Add restart button
+    const restartButton = this.add.text(400, 400, 'Play Again', {
+      fontSize: '24px',
+      color: '#fff',
+      backgroundColor: '#8b5cf6',
+      padding: { x: 20, y: 10 }
+    }).setOrigin(0.5).setInteractive();
+
+    restartButton.on('pointerdown', () => {
+      this.restartGame();
+    });
+
     // Call onResult after a delay
     this.time.delayedCall(2000, () => {
       this.onResult(this.score);
     });
+  }
+
+  private restartGame() {
+    // Reset game state
+    this.gameOver = false;
+    this.score = 0;
+    this.scoreText.setText('Score: 0');
+    
+    // Clear all pipes
+    this.pipes.clear(true, true);
+    
+    // Reset bird position
+    this.bird.x = 100;
+    this.bird.y = 300;
+    const birdBody = this.bird.body as Phaser.Physics.Arcade.Body;
+    birdBody.setVelocity(0, 0);
+    
+    // Resume physics
+    this.physics.resume();
+    
+    // Clear all text objects
+    this.children.removeAll(true);
+    
+    // Recreate score text
+    this.scoreText = this.add.text(16, 16, 'Score: 0', {
+      fontSize: '32px',
+      color: '#fff',
+      stroke: '#000',
+      strokeThickness: 4
+    });
+    
+    // Recreate bird
+    this.bird = this.add.graphics();
+    this.bird.fillStyle(0xff6b6b, 1);
+    this.bird.fillCircle(0, 0, 15);
+    this.bird.x = 100;
+    this.bird.y = 300;
+    
+    this.physics.add.existing(this.bird);
+    const newBirdBody = this.bird.body as Phaser.Physics.Arcade.Body;
+    newBirdBody.setCollideWorldBounds(true);
+    newBirdBody.setBounce(0.1);
   }
 
   update() {
